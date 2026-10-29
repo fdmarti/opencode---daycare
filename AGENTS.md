@@ -12,9 +12,17 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`).
 
-- `app/` is still the untouched create-next-app starter. The real product spec so far is the UI mockups in `references/pantallas/*.dc.html` (daycare app in Spanish: login, feeds, niños, avisos, resumen del día…). Before building a screen, read its `.dc.html` mockup; polished renders are in `references/screenshots/`.
+- The product spec is the UI mockups in `references/pantallas/*.dc.html` (daycare app in Spanish: login, feeds, niños, avisos, resumen del día…). Before building a screen, read its `.dc.html` mockup; polished renders are in `references/screenshots/`.
+- Approved specs live in `specs/` (`NN-name.md`, plus `specs/.spec-config.yml` with `AutoCreateBranch` for `/spec-impl`). The create-next-app starter page is gone: `/` is the feed (spec 01).
 - `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo, so never modify or rebuild it here.
 - Path alias: `@/*` → repo root.
+
+## Structure (Nuxt-style folders)
+
+- `app/` — routing/layouts only (Next.js convention, keep intact): route group `app/(app)/` holds the shared shell (`layout.tsx` = `<Sidebar/>` + scrollable `<main>`) and its pages.
+- `components/<feature>/` — UI split per feature (`feed/`, `layout/`), cross-cutting code in `components/common/<concern>/` (e.g. `icons/Icons.tsx`). File names are **PascalCase**.
+- `data/<feature>/` — mock data for that feature (`data/feed/mock-posts.ts`). No Next.js special meaning; routing lives only in `app/`.
+- Never put feature UI inside `app/` pages; import via the `@/*` alias.
 
 ## Commands
 
@@ -30,8 +38,9 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 
 ## Skills & workflow (`.agents/skills/`)
 
-- `/spec <feature>` — spec-driven design; specs are saved to `specs/` (folder doesn't exist yet).
-- `/spec-impl <NN-name>` — implements an approved spec on its own git branch.
+- `/spec <feature>` — spec-driven design; specs are saved to `specs/` as `NN-name.md` with an `Estado:` header (must be "Aprovado" before implementing).
+- `/spec-impl <NN-name>` — implements an approved spec on its own `spec-NN-slug` branch; branch is created automatically unless `specs/.spec-config.yml` sets `AutoCreateBranch: false`.
+- `spec-verifier` (`.opencode/agents/spec-verifier.md`) — subagent that reviews a spec's **Criterios de aceptación**: verifies statically, consults Context7 for Next.js conventions, uses Playwright MCP for screens, and flips `- [ ]` → `- [x]` (fixing code when needed).
 - `generating-commits` — Conventional Commits, ≤72 chars, with a "why" explanation.
 
 ## MCPs
@@ -43,6 +52,8 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 ## Code rules
 
 - Always use clean code, all name must be in english. (functions, variables, etc)
+- Code in English (functions, variables, components); visible strings in Spanish (mockup copy).
+- Specs are historical records: never edit an implemented spec's scope; criteria are marked by the verifier.
 
 <!-- BEGIN:nextjs-agent-feedback -->
 
