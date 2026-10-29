@@ -1,6 +1,6 @@
 # SPEC 03 — Listado de niños (`/kids`)
 
-> **Estado:** Borrador
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (shell + sidebar), SPEC 02 (estructura de carpetas)
 > **Fecha:** 2026-10-29
 > **Objetivo:** Implementar la pantalla `references/pantallas/ninos.dc.html` en la ruta `/kids` dentro de `app/(app)/`, con estilos idénticos al mockup y datos hardcodeados.

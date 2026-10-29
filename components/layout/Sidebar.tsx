@@ -13,13 +13,15 @@ interface NavItem {
   icon: ReactNode;
 }
 
-// Only the feed route exists so far; the rest are dead links until their own spec lands.
+// Only these routes exist so far; the rest are dead links until their own spec lands.
 const navItems: NavItem[] = [
   { label: "Feed", path: "/", icon: <FeedIcon /> },
-  { label: "Niños", path: "/ninos", icon: <NinosIcon /> },
+  { label: "Niños", path: "/kids", icon: <NinosIcon /> },
   { label: "Avisos", path: "/avisos", icon: <AvisosIcon /> },
   { label: "Mi cuenta", path: "/mi-cuenta", icon: <CuentaIcon /> },
 ];
+
+const existingPaths = new Set(["/", "/kids"]);
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -54,8 +56,8 @@ export function Sidebar() {
               ? "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-acento-claro text-acento font-extrabold text-[14.5px]"
               : "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-transparent text-nav font-semibold text-[14.5px]";
 
-          return item.path === "/" ? (
-            <Link key={item.path} href="/" className={className}>
+          return existingPaths.has(item.path) ? (
+            <Link key={item.path} href={item.path} className={className}>
               {item.icon}
               {item.label}
             </Link>
