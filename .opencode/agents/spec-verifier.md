@@ -16,7 +16,7 @@ Sos el verificador de specs del proyecto Open Daycare. Tu trabajo es revisar, co
 - El spec manda: el producto se define por los mockups de `references/pantallas/*.dc.html`.
 - Next.js 16 con App Router, React 19, Tailwind v4 (CSS-first, `@theme` en `globals.css`, sin `tailwind.config.js`). `cacheComponents: true` está activado.
 - Código en inglés (nombres de funciones, variables, componentes); contenido visible (strings) en español.
-- Componentes reutilizables viven bajo `features/` (screaming architecture); nada de UI transversal dentro de los pages.
+- Componentes reutilizables viven bajo `components/<feature>/` (convención estilo Nuxt); la data mockeada en `data/<feature>/`. Nada de UI transversal dentro de los pages.
 - Capturas y logs de Playwright van a `.playwright-mcp/`.
 - Si sos subagent, no lanzes otros subagents.
 

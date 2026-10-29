@@ -1,4 +1,4 @@
-import type { Post } from "@/features/feed/mock-data";
+import type { Post } from "@/data/feed/mock-posts";
 
 const badgeByType = {
   achievement: { label: "LOGRO", dot: "bg-logro", text: "text-logro", bg: "bg-logro-fondo" },

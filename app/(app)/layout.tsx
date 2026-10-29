@@ -1,4 +1,4 @@
-import { Sidebar } from "@/features/layout/sidebar";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 // Shared shell for every screen of the app section: fixed sidebar + scrollable main.
 export default function AppLayout({ children }: LayoutProps<"/">) {

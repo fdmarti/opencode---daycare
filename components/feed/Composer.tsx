@@ -1,4 +1,4 @@
-import { CameraIcon } from '@/features/common/icons/icons'
+import { CameraIcon } from '@/components/common/icons/Icons'
 
 // Dead link until "crear publicación" lands in a future spec.
 export function Composer() {

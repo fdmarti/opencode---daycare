@@ -68,14 +68,14 @@ data/                 # data mockeada, una carpeta por feature
 
 ## Criterios de aceptación
 
-- [ ] No existe la carpeta `features/`.
-- [ ] `components/feed/Post.tsx`, `components/feed/Composer.tsx`, `components/layout/Sidebar.tsx` existen con nombres PascalCase.
-- [ ] `data/feed/mock-posts.ts` existe y compila; la data vive fuera de `components/`.
-- [ ] `components/common/Icons.tsx` quedó en `components/common/icons/`.
-- [ ] No hay imports rotos: `npm run build` y `npm run lint` pasan.
-- [ ] `/` renderiza idéntico a antes (mismo markup, estilos y contenido); los visual deltas con el mockup son los mismos que al cierre del SPEC 01.
-- [ ] `app/` no se modifica: ni rutas ni layouts ni pages.
-- [ ] `specs/01-feed-home.md` no fue modificado.
+- [x] No existe la carpeta `features/`.
+- [x] `components/feed/Post.tsx`, `components/feed/Composer.tsx`, `components/layout/Sidebar.tsx` existen con nombres PascalCase.
+- [x] `data/feed/mock-posts.ts` existe y compila; la data vive fuera de `components/`.
+- [x] `components/common/Icons.tsx` quedó en `components/common/icons/`.
+- [x] No hay imports rotos: `npm run build` y `npm run lint` pasan.
+- [x] `/` renderiza idéntico a antes (mismo markup, estilos y contenido); los visual deltas con el mockup son los mismos que al cierre del SPEC 01.
+- [x] `app/` no se modifica: ni rutas ni layouts ni pages.
+- [x] `specs/01-feed-home.md` no fue modificado.
 
 ## Decisiones
 
