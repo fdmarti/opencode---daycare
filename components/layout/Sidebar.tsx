@@ -5,7 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, PlusIcon, SunIcon } from '@/components/common/Icons'
+import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, PlusIcon, SunIcon } from '@/components/common/icons/Icons'
 
 interface NavItem {
   label: string;

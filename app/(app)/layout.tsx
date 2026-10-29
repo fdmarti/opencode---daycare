@@ -1,4 +1,4 @@
-import { Sidebar } from "@/features/layout/sidebar";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 export default function AppLayout({ children }: LayoutProps<"/">) {
   return (

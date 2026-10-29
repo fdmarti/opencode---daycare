@@ -1,6 +1,6 @@
-import { Composer } from "@/features/feed/composer";
-import { Post } from "@/features/feed/post";
-import { mockPosts } from "@/features/feed/mock-data";
+import { mockPosts } from "@/data/feed/mock-posts";
+import { Composer } from "@/components/feed/Composer";
+import { Post } from "@/components/feed/Post";
 
 export default function FeedPage() {
   return (
