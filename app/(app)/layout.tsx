@@ -1,5 +1,6 @@
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar } from "@/features/layout/sidebar";
 
+// Shared shell for every screen of the app section: fixed sidebar + scrollable main.
 export default function AppLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-screen bg-fondo">

@@ -1,23 +1,24 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, PlusIcon, SunIcon } from '@/components/common/icons/Icons'
+import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, PlusIcon, SunIcon } from '@/features/common/icons/icons'
 
 interface NavItem {
   label: string;
-  route: Route;
+  /** Route that marks the item as active. */
+  path: string;
   icon: ReactNode;
 }
 
+// Only the feed route exists so far; the rest are dead links until their own spec lands.
 const navItems: NavItem[] = [
-  { label: "Feed", route: "/", icon: <FeedIcon /> },
-  { label: "Niños", route: "/ninos", icon: <NinosIcon /> },
-  { label: "Avisos", route: "/avisos", icon: <AvisosIcon /> },
-  { label: "Mi cuenta", route: "/mi-cuenta", icon: <CuentaIcon /> },
+  { label: "Feed", path: "/", icon: <FeedIcon /> },
+  { label: "Niños", path: "/ninos", icon: <NinosIcon /> },
+  { label: "Avisos", path: "/avisos", icon: <AvisosIcon /> },
+  { label: "Mi cuenta", path: "/mi-cuenta", icon: <CuentaIcon /> },
 ];
 
 export function Sidebar() {
@@ -37,30 +38,33 @@ export function Sidebar() {
         </div>
       </Link>
 
-      <Link
-        href="/crear-publicacion"
+      <a
+        href="#"
         className="flex items-center justify-center gap-2 w-full p-3 rounded-2xl bg-gradient-to-b from-boton-top to-boton-bottom text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)] mb-[18px]"
       >
         <PlusIcon />
         Nueva publicación
-      </Link>
+      </a>
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.route;
-          return (
-            <Link
-              key={item.route}
-              href={item.route}
-              className={
-                isActive
-                  ? "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-acento-claro text-acento font-extrabold text-[14.5px]"
-                  : "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-transparent text-nav font-semibold text-[14.5px]"
-              }
-            >
+          const isActive = pathname === item.path;
+          const className =
+            isActive
+              ? "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-acento-claro text-acento font-extrabold text-[14.5px]"
+              : "flex items-center gap-3 px-3 py-[11px] rounded-xl bg-transparent text-nav font-semibold text-[14.5px]";
+
+          return item.path === "/" ? (
+            <Link key={item.path} href="/" className={className}>
               {item.icon}
               {item.label}
             </Link>
+          ) : (
+            // Dead link until the screen lands in its own spec.
+            <a key={item.path} href="#" className={className}>
+              {item.icon}
+              {item.label}
+            </a>
           );
         })}
       </nav>

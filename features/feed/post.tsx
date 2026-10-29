@@ -1,5 +1,4 @@
-import Link from "next/link";
-import type { Post } from "@/data/feed/mock-posts";
+import type { Post } from "@/features/feed/mock-data";
 
 const badgeByType = {
   achievement: { label: "LOGRO", dot: "bg-logro", text: "text-logro", bg: "bg-logro-fondo" },
@@ -61,9 +60,9 @@ export function Post({ post }: { post: Post }) {
         </a>
         <span className="flex-1" />
         {/* Dead link until "crear publicación" lands in a future spec. */}
-        <Link href="#" className="text-acento-editar font-extrabold text-sm">
+        <a href="#" className="text-acento-editar font-extrabold text-sm">
           Editar
-        </Link>
+        </a>
       </footer>
     </article>
   );

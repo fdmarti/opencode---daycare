@@ -65,18 +65,18 @@ No hay persistencia: los datos viven solo en este archivo de ejemplo.
 
 ## Criterios de aceptación
 
-- [ ] `/` renderiza sin errores (`npm run build` pasa).
-- [ ] Fredoka y Nunito cargan correctamente (no hay fallback del sistema en headings ni body).
-- [ ] La sidebar es idéntica al mockup: logo OpenDayCare/Sala Soles, botón "Nueva publicación" con gradiente y sombra, nav con Feed activo (fondo `#FBE3D8`, texto `#D9583C`) y Niños/Avisos/Mi cuenta inactivos, bloque de usuario "Caro Giménez" con avatar "C".
-- [ ] El header dice "GUARDERÍA · SALA SOLES", "Buenas, Caro" y "12 niños · martes 17 jun".
-- [ ] El composer muestra avatar "C", placeholder "Compartí un momento…" y botón de cámara.
-- [ ] Se muestran exactamente 3 posts bajo "PUBLICADO HOY" con sus badges: LOGRO (verde), ACTIVIDAD (celeste, con placeholder de foto dashed), ANUNCIO (azul, teaser de megáfono en avatar).
-- [ ] Cada post muestra hora, "publicado por vos", destinatario, texto, corazones, comentarios y "Editar" — con los números del mockup (3/1, 5/2, 8/0).
-- [ ] Los links a crear-publicacion, detalle-publicacion, ninos, avisos, mi-cuenta, login y foto no rompen la app (no son rutas reales).
-- [ ] En viewport < lg la sidebar no se muestra y el contenido ocupa el ancho completo.
-- [ ] El shell (sidebar + `<main>`) vive en `app/(app)/layout.tsx`, no en el page del feed; al navegar a una ruta futura dentro de `(app)` el sidebar persiste sin full reload.
-- [ ] `Sidebar` marca activo el ítem cuya ruta coincide con `usePathname()` (`/` → Feed).
-- [ ] Todo componente reutilizable vive bajo `features/` (screaming architecture); no hay UI transversal dentro del page.
+- [x] `/` renderiza sin errores (`npm run build` pasa).
+- [x] Fredoka y Nunito cargan correctamente (no hay fallback del sistema en headings ni body).
+- [x] La sidebar es idéntica al mockup: logo OpenDayCare/Sala Soles, botón "Nueva publicación" con gradiente y sombra, nav con Feed activo (fondo `#FBE3D8`, texto `#D9583C`) y Niños/Avisos/Mi cuenta inactivos, bloque de usuario "Caro Giménez" con avatar "C".
+- [x] El header dice "GUARDERÍA · SALA SOLES", "Buenas, Caro" y "12 niños · martes 17 jun".
+- [x] El composer muestra avatar "C", placeholder "Compartí un momento…" y botón de cámara.
+- [x] Se muestran exactamente 3 posts bajo "PUBLICADO HOY" con sus badges: LOGRO (verde), ACTIVIDAD (celeste, con placeholder de foto dashed), ANUNCIO (azul, teaser de megáfono en avatar).
+- [x] Cada post muestra hora, "publicado por vos", destinatario, texto, corazones, comentarios y "Editar" — con los números del mockup (3/1, 5/2, 8/0).
+- [x] Los links a crear-publicacion, detalle-publicacion, ninos, avisos, mi-cuenta, login y foto no rompen la app (no son rutas reales).
+- [x] En viewport < lg la sidebar no se muestra y el contenido ocupa el ancho completo.
+- [x] El shell (sidebar + `<main>`) vive en `app/(app)/layout.tsx`, no en el page del feed; al navegar a una ruta futura dentro de `(app)` el sidebar persiste sin full reload.
+- [x] `Sidebar` marca activo el ítem cuya ruta coincide con `usePathname()` (`/` → Feed).
+- [x] Todo componente reutilizable vive bajo `features/` (screaming architecture); no hay UI transversal dentro del page.
 
 ## Decisiones
 
