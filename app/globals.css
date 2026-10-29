@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Palette from references/pantallas/feed.dc.html */
+  --color-fondo: #f6ecdf;
+  --color-card: #fffdf9;
+  --color-borde: #ece0d0;
+  --color-borde-suave: #f0e6d8;
+  --color-tinta: #3f362e;
+  --color-tinta-suave: #4a4038;
+
+  /* Accents */
+  --color-acento: #d9583c;
+  --color-acento-editar: #c5503a;
+  --color-acento-claro: #fbe3d8;
+  --color-corazon: #e0654a;
+
+  /* Neutrals / text helpers */
+  --color-placeholder: #a89a8b;
+  --color-mute: #94887b;
+  --color-nav: #6e6359;
+  --color-separador: #e7dac8;
+
+  /* Badges */
+  --color-logro-fondo: #cfebd8;
+  --color-logro: #3e9b6c;
+  --color-actividad-fondo: #c7e7f1;
+  --color-actividad: #2e89a6;
+  --color-anuncio-fondo: #ccd8f4;
+  --color-anuncio: #4e72c8;
+  --color-avatar-nino: #a9d9e8;
+  --color-avatar-nino-tinta: #1f7a93;
+
+  /* Buttons */
+  --color-boton-top: #f4977e;
+  --color-boton-bottom: #ee8164;
+  --color-avatar-usuario: #f2937a;
+
+  /* Photo placeholder */
+  --color-foto-fondo: #f4ece1;
+  --color-foto-borde: #dbcdba;
+  --color-foto-tinta: #b0a290;
+
+  /* Fonts */
+  --font-sans: var(--font-nunito);
+  --font-display: var(--font-fredoka);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    box-sizing: border-box;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-fondo);
+    color: var(--color-tinta);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #e4d6c4;
+    border-radius: 8px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
 }
