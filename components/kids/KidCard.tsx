@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Kid } from "@/data/kids/mock-kids";
 import { Avatar } from "@/components/common/avatars/Avatar";
-import { ChevronIconRight } from "@/components/common/icons/Icons";
+import { ChevronIcon } from "@/components/common/icons/Icons";
 
 export function KidCard({ kid }: { kid: Kid }) {
   const parentCount = kid.parents.length;
@@ -29,7 +29,9 @@ export function KidCard({ kid }: { kid: Kid }) {
           VINCULAR
         </span>
       ) : (
-        <ChevronIconRight size={18} />
+        <span className="flex-none text-[#CBB89F]">
+          <ChevronIcon size={18} rotate={-90} />
+        </span>
       )}
     </Link>
   );

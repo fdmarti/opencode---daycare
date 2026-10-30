@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import { CustomButton } from "@/components/common/ui/CustomButton";
+import { CustomInput } from "@/components/common/ui/CustomInput";
+
 export function LoginForm() {
   return (
     <div className="w-full max-w-98">
@@ -10,30 +13,20 @@ export function LoginForm() {
         Ingresá para ver el día de hoy.
       </p>
 
-      <label
-        htmlFor="login-email"
-        className="block text-[12px] font-bold tracking-[0.7px] text-mute mb-2"
-      >
-        EMAIL
-      </label>
-      <input
+      <CustomInput
         id="login-email"
         type="email"
+        label="EMAIL"
         placeholder="example@some.com"
-        className="w-full p-[14px_16px] rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-tinta mb-4.5"
+        className="mb-4.5"
       />
 
-      <label
-        htmlFor="login-password"
-        className="block text-[12px] font-bold tracking-[0.7px] text-mute mb-2"
-      >
-        CONTRASEÑA
-      </label>
-      <input
+      <CustomInput
         id="login-password"
         type="password"
+        label="CONTRASEÑA"
         placeholder="••••••••"
-        className="w-full p-[14px_16px] rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-tinta mb-2.5"
+        className="mb-2.5"
       />
 
       <div className="text-right mb-5">
@@ -45,12 +38,9 @@ export function LoginForm() {
         </a>
       </div>
 
-      <a
-        href="#"
-        className="block w-full p-3.75 rounded-[15px] bg-[linear-gradient(180deg,#F4977E,#EE8164)] text-white font-extrabold text-[16px] text-center shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
-      >
+      <CustomButton variant="primary" size="lg" type="button">
         Iniciar sesión
-      </a>
+      </CustomButton>
 
       <p className="text-center mt-6 mb-0 text-[14.5px] text-mute">
         ¿Te invitó la guardería?{" "}

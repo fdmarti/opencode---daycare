@@ -2,6 +2,7 @@ import { mockKids } from "@/data/kids/mock-kids";
 import { KidCard } from "@/components/kids/KidCard";
 import { AddKidModal } from "@/components/kids/AddKidModal";
 import { SearchIcon } from "@/components/common/icons/Icons";
+import { CustomInput } from "@/components/common/ui/CustomInput";
 
 export default function KidsPage() {
   return (
@@ -19,9 +20,9 @@ export default function KidsPage() {
       {/* Static search: no onChange and no filtering until a future spec. */}
       <div className="flex items-center gap-2.75 bg-card border border-borde rounded-[14px] px-4 py-3 mb-5.5">
         <SearchIcon size={18} />
-        <input
+        <CustomInput
+          variant="bare"
           placeholder="Buscar niño…"
-          className="flex-1 border-none bg-none text-[15px] text-tinta"
         />
       </div>
 

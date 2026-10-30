@@ -3,6 +3,8 @@
 import Link from "next/link";
 
 import { SunIcon } from "@/components/common/icons/Icons";
+import { CustomButton } from "@/components/common/ui/CustomButton";
+import { CustomInput } from "@/components/common/ui/CustomInput";
 import { mockInvite } from "@/data/register/mock-invite";
 
 export function RegisterForm() {
@@ -33,43 +35,29 @@ export function RegisterForm() {
       </div>
 
       <form onSubmit={(event) => event.preventDefault()}>
-        <label
-          htmlFor="register-invite-code"
-          className="block text-[12px] font-bold tracking-[0.7px] text-mute mb-2"
-        >
-          CÓDIGO DE INVITACIÓN
-        </label>
-        <input
+        <CustomInput
           id="register-invite-code"
           type="text"
+          label="CÓDIGO DE INVITACIÓN"
           defaultValue={mockInvite.inviteCode}
-          className="w-full p-[14px_16px] rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white font-display text-[18px] font-bold tracking-[3px] text-tinta mb-4.5"
+          inputClassName="font-display text-[18px] font-bold tracking-[3px]"
+          className="mb-4.5"
         />
 
-        <label
-          htmlFor="register-email"
-          className="block text-[12px] font-bold tracking-[0.7px] text-mute mb-2"
-        >
-          EMAIL
-        </label>
-        <input
+        <CustomInput
           id="register-email"
           type="email"
+          label="EMAIL"
           defaultValue={mockInvite.email}
-          className="w-full p-[14px_16px] rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-tinta mb-4.5"
+          className="mb-4.5"
         />
 
-        <label
-          htmlFor="register-password"
-          className="block text-[12px] font-bold tracking-[0.7px] text-mute mb-2"
-        >
-          CREAR CONTRASEÑA
-        </label>
-        <input
+        <CustomInput
           id="register-password"
           type="password"
+          label="CREAR CONTRASEÑA"
           defaultValue={mockInvite.password}
-          className="w-full p-[14px_16px] rounded-[14px] border-[1.5px] border-[#F2A78E] bg-white text-[15px] text-tinta mb-4.5"
+          className="mb-4.5"
         />
 
         <label className="flex items-start gap-3 bg-[#FBF1D6] rounded-[14px] p-[14px_16px] mb-6 cursor-pointer">
@@ -84,12 +72,9 @@ export function RegisterForm() {
           </span>
         </label>
 
-        <a
-          href="#"
-          className="block w-full p-3.75 rounded-[15px] bg-[linear-gradient(180deg,#F4977E,#EE8164)] text-white font-extrabold text-[16px] text-center shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
-        >
+        <CustomButton variant="primary" size="lg" type="submit">
           Activar mi cuenta
-        </a>
+        </CustomButton>
       </form>
 
       <p className="text-center mt-5.5 mb-0 text-[14.5px] text-mute">
