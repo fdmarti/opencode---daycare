@@ -16,7 +16,7 @@ export function Post({ post }: { post: Post }) {
       <header className="flex items-center gap-3 mb-3.5">
         {isAnnouncement ? (
           <div className="w-11 h-11 rounded-full bg-anuncio-fondo text-anuncio flex items-center justify-center flex-none">
-            <MegaphoneIcon />
+            <MegaphoneIcon size={20} />
           </div>
         ) : (
           <div className="w-11 h-11 rounded-full bg-avatar-nino text-avatar-nino-tinta font-display font-semibold text-[17px] flex items-center justify-center flex-none">
@@ -44,19 +44,19 @@ export function Post({ post }: { post: Post }) {
           href="#"
           className="flex flex-col items-center justify-center gap-2 mt-3.5 border-[1.5px] border-dashed border-foto-borde rounded-2xl bg-foto-fondo h-50 text-foto-tinta"
         >
-          <ImagePlaceholderIcon />
+          <ImagePlaceholderIcon size={30} />
           <span className="text-[13.5px]">{post.photoCaption}</span>
         </a>
       )}
 
       <footer className="flex items-center gap-4.5 mt-4 pt-3.5 border-t border-borde-suave">
         <span className="flex items-center gap-1.75 text-corazon font-bold text-sm">
-          <HeartIcon />
+          <HeartIcon size={19} />
           {post.hearts}
         </span>
         {/* Dead link until the post detail lands in a future spec. */}
         <a href="#" className="flex items-center gap-1.75 text-mute font-bold text-sm">
-          <CommentIcon />
+          <CommentIcon size={18} />
           {post.comments}
         </a>
         <span className="flex-1" />

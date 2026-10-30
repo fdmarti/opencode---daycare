@@ -29,7 +29,7 @@ export function KidCard({ kid }: { kid: Kid }) {
           VINCULAR
         </span>
       ) : (
-        <ChevronIconRight />
+        <ChevronIconRight size={18} />
       )}
     </Link>
   );

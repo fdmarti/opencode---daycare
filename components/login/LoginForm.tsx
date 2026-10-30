@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function LoginForm() {
   return (
     <div className="w-full max-w-98">
@@ -52,9 +54,9 @@ export function LoginForm() {
 
       <p className="text-center mt-6 mb-0 text-[14.5px] text-mute">
         ¿Te invitó la guardería?{" "}
-        <a href="#" className="font-extrabold text-acento-editar">
+        <Link href="/register" className="font-extrabold text-acento-editar">
           Activá tu cuenta
-        </a>
+        </Link>
       </p>
     </div>
   );

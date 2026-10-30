@@ -8,7 +8,7 @@ export function LoginPanel() {
 
       <div className="relative flex items-center gap-3.25">
         <div className="w-11.5 h-11.5 rounded-[14px] bg-white/22 flex items-center justify-center">
-          <SunIcon />
+          <SunIcon size={21} />
         </div>
         <span className="font-display font-semibold text-[21px] tracking-[0.5px]">
           OpenDayCare

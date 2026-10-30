@@ -46,7 +46,7 @@ export function KidProfile({ kid }: { kid: Kid }) {
         href="/kids"
         className="inline-flex items-center gap-1.75 text-[14px] font-bold text-mute mb-5"
       >
-        <ChevronIconLeft />
+        <ChevronIconLeft size={18} />
         Volver a Niños
       </Link>
 
