@@ -9,7 +9,7 @@ export function KidNotFound() {
         href="/kids"
         className="inline-flex items-center gap-1.75 text-[14px] font-bold text-mute mb-5"
       >
-        <ChevronIconLeft />
+        <ChevronIconLeft size={18} />
         Volver a Niños
       </Link>
       <div className="bg-card border border-borde rounded-[18px] p-10 flex flex-col items-center gap-2 text-center">

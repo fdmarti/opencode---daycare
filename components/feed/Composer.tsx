@@ -12,7 +12,7 @@ export function Composer() {
       </div>
       <span className="flex-1 text-placeholder text-[15px]">Compartí un momento…</span>
       <span className="w-9.5 h-9.5 rounded-xl bg-acento-claro text-corazon flex items-center justify-center">
-        <CameraIcon />
+        <CameraIcon size={19} />
       </span>
     </a>
   );
