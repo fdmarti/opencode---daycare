@@ -48,7 +48,11 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 ## Spec-driven workflow (`.agents/skills/`)
 
 - Specs live in `specs/` as `NN-name.md`, written in Spanish with a `> **Estado:**` header (`Borrador` → `Aprovado` → `Implementado`). `specs/.spec-config.yml` holds `AutoCreateBranch`.
-- `/spec <feature>` — designs a spec only; never writes code. Saves `specs/NN-slug.md` and stops.
+- **Specs are categorized by scope** (see below): `specs/app/` for everything that touches the application (UI, components, routes, mock data) and `specs/databases/` for everything that touches the database (migrations, seeders, RLS, schema, triggers). `specs/.spec-config.yml` stays at the root of `specs/`.
+  - A spec that changes the app goes to `specs/app/NN-slug.md`; a spec that changes the database (migration or seeder) goes to `specs/databases/NN-slug.md`. A spec that touches both is split in two: one per folder, each with its own number.
+  - **Numbering is global and correlative across both folders** (`specs/app/01-…`, `specs/databases/11-…`, `specs/app/13-…`). The number identifies the spec anywhere; the folder only says what it touches. When starting a new spec, take the highest number that exists in either folder and add one.
+  - `/spec` and `/spec-impl` must look for the file in both folders: a spec may be referenced by its full path (`specs/databases/12-users-table`), by its number (`12`) or by its slug (`12-users-table`).
+- `/spec <feature>` — designs a spec only; never writes code. Saves `specs/app/NN-slug.md` or `specs/databases/NN-slug.md` (depending on scope) and stops.
 - `/spec-impl <NN-name>` — implements an **approved** spec on its own `spec-NN-slug` branch, one plan step at a time, pausing for diff review; it never commits on its own.
 - `spec-verifier` (`.opencode/agents/spec-verifier.md`) — subagent that checks **Criterios de aceptación** against code + Playwright and flips `- [ ]` → `- [x]`.
 - Specs are historical records: never rewrite an implemented spec's scope; only the verifier marks criteria.

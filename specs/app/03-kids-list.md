@@ -27,7 +27,7 @@
 - Vinculación de padres (`vincular-padre.dc.html`) y la acción real del badge "VINCULAR".
 - Datos reales / backend: la data vive solo en `data/kids/mock-kids.ts`.
 - Pantallas Avisos, Mi cuenta y Login: siguen como links muertos.
-- Edición de `specs/01-feed-home.md` ni `specs/02-folder-structure.md` (registro histórico).
+- Edición de `specs/app/01-feed-home.md` ni `specs/app/02-folder-structure.md` (registro histórico).
 
 ## Modelo de datos
 
