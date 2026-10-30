@@ -4,7 +4,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, PlusIcon, SunIcon } from '@/components/common/icons/Icons'
+import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, SunIcon } from '@/components/common/icons/Icons'
+import { NewPostModal } from '@/components/feed/NewPostModal'
 
 interface NavItem {
   label: string;
@@ -40,13 +41,7 @@ export function Sidebar() {
         </div>
       </Link>
 
-      <a
-        href="#"
-        className="flex items-center justify-center gap-2 w-full p-3 rounded-2xl bg-linear-to-b from-boton-top to-boton-bottom text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)] mb-4.5"
-      >
-        <PlusIcon size={17} />
-        Nueva publicación
-      </a>
+      <NewPostModal />
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map((item) => {
