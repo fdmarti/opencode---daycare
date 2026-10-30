@@ -28,7 +28,7 @@
 - Validación de formulario, estado controlado, `onChange` o mensajes de error.
 - Persistencia de la contraseña o del código de invitación.
 - Redirección post-activación al feed.
-- Modificar `specs/05-login.md` u otros specs previos: quedan como registro histórico.
+- Modificar `specs/app/05-login.md` u otros specs previos: quedan como registro histórico.
 
 ## Modelo de datos
 
@@ -118,7 +118,7 @@ Convención: código en inglés, copy visible en español. Sin persistencia.
 - **Sí:** `size?: number` con default 20 en todos los iconos, en lugar de un default por icono. Un único punto de entrada para el tamaño; el valor por defecto es el que corresponde a la mayoría de los usos.
 - **Sí:** cada call site pasa explícitamente su tamaño original. El refactor no puede cambiar el render de `/`, `/kids`, `/kids/[id]` ni `/login`.
 - **No:** mantener defaults por icono (17, 18, 19, 21). Con el default 20 más el `size` explícito en los usos, cada ícono queda con un único origen de verdad para su medida.
-- **No:** tocar `specs/05-login.md`. Su criterio de aceptación sobre "Activá tu cuenta" queda desactualizado a propósito: los specs son registro histórico.
+- **No:** tocar `specs/app/05-login.md`. Su criterio de aceptación sobre "Activá tu cuenta" queda desactualizado a propósito: los specs son registro histórico.
 - **No:** captura de Playwright ni comparación visual contra el mockup.
 
 ## Riesgos

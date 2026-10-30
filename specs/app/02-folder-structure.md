@@ -22,7 +22,7 @@
 **Fuera del alcance (para specs futuros):**
 
 - Cualquier cambio de lógica, markup, estilos o contenido de los componentes (cambio estructural puro).
-- Modificar `specs/01-feed-home.md` ni ningún otro spec: quedan como registro histórico.
+- Modificar `specs/app/01-feed-home.md` ni ningún otro spec: quedan como registro histórico.
 - Nuevas features, pantallas o rutas: la estructura de `app/` (route groups, `layout.tsx`, `page.tsx`) se respeta tal como la maneja Next.js.
 - Cambios a la configuración de Next/Tailwind.
 
@@ -75,7 +75,7 @@ data/                 # data mockeada, una carpeta por feature
 - [x] No hay imports rotos: `npm run build` y `npm run lint` pasan.
 - [x] `/` renderiza idéntico a antes (mismo markup, estilos y contenido); los visual deltas con el mockup son los mismos que al cierre del SPEC 01.
 - [x] `app/` no se modifica: ni rutas ni layouts ni pages.
-- [x] `specs/01-feed-home.md` no fue modificado.
+- [x] `specs/app/01-feed-home.md` no fue modificado.
 
 ## Decisiones
 

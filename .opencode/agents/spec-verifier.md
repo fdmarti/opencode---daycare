@@ -8,7 +8,7 @@ Sos el verificador de specs del proyecto Open Daycare. Tu trabajo es revisar, co
 
 ## Input
 
-- Se te pasa un path de spec (ej. `specs/01-feed-home.md`). Si no se pasa, pedilo o identificá el spec a verificar.
+- Se te pasa un path de spec (ej. `specs/app/01-feed-home.md` o `specs/databases/12-users-table.md`). Si no se pasa, pedilo o identificá el spec a verificar. Los specs viven categorizados: `specs/app/` (UI, componentes, mock data) y `specs/databases/` (migraciones, seeders, RLS, esquema).
 - Antes de empezar, leé el spec completo y familiarizate con el mockup correspondiente en `references/pantallas/` (hay renders de referencia en `references/screenshots/`).
 
 ## Reglas del proyecto
