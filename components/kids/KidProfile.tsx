@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Avatar } from "@/components/common/avatars/Avatar";
 import type { Kid, KidParent } from "@/data/kids/mock-kids";
 import { ChevronIcon } from "@/components/common/icons/Icons";
+import { LinkParentModal } from "@/components/kids/LinkParentModal";
 
 // Short month names in Spanish; two fixed formats don't justify a date library.
 const MONTHS_SHORT_ES = [
@@ -154,26 +155,7 @@ export function KidProfile({ kid }: { kid: Kid }) {
                   <ParentStatusBadge status={parent.status} />
                 </div>
               ))}
-              {/* Dead link until "vincular padre" lands in a future spec. */}
-              <a href="#" className="flex items-center gap-3 pt-2">
-                <span className="flex-none w-10 h-10 rounded-full border-[1.5px] border-dashed border-[#D8CBBA] flex items-center justify-center text-foto-tinta">
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                </span>
-                <span className="text-[14.5px] font-extrabold text-acento-editar">
-                  Vincular otro padre
-                </span>
-              </a>
+              <LinkParentModal kidName={kid.name} />
             </div>
           </div>
         </div>

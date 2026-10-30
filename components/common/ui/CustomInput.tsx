@@ -19,7 +19,9 @@ const FIELD_INPUT_CLASS =
 
 const BARE_INPUT_CLASS = "flex-1 border-none bg-none text-[15px] text-tinta";
 
-const LABEL_CLASS = "block text-[12px] font-extrabold tracking-[0.7px] text-mute mb-2";
+/** Shared label style, exported so other fields can reuse it verbatim. */
+export const inputLabelClass =
+  "block text-[12px] font-extrabold tracking-[0.7px] text-mute mb-2";
 const ERROR_CLASS = "mt-1.5 mb-0 text-[13px] text-acento";
 
 export function CustomInput({
@@ -48,7 +50,7 @@ export function CustomInput({
   return (
     <div className={className}>
       {label && (
-        <label htmlFor={id} className={LABEL_CLASS}>
+        <label htmlFor={id} className={inputLabelClass}>
           {label}
         </label>
       )}

@@ -229,7 +229,7 @@ export function AddKidModal() {
                       </option>
                     ))}
                   </select>
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#B0A290]">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-foto-tinta">
                     <ChevronIcon rotate={0} />
                   </span>
                 </div>
