@@ -3,7 +3,9 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { mockRooms } from "@/data/kids/mock-rooms";
-import { ChevronIconDown, PlusIcon } from "../common/icons/Icons";
+import { ChevronIcon, PlusIcon } from "../common/icons/Icons";
+import { CustomButton } from "../common/ui/CustomButton";
+import { CustomInput } from "../common/ui/CustomInput";
 
 const FORM_ID = "add-kid-form";
 const TITLE_ID = "add-kid-title";
@@ -132,15 +134,14 @@ export function AddKidModal() {
 
   return (
     <>
-      <button
+      <CustomButton
         ref={triggerRef}
         type="button"
         onClick={openModal}
-        className="flex items-center gap-2 px-4.5 py-2.75 rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)] transition duration-150 hover:cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(238,129,100,0.85)] active:translate-y-0"
       >
         <PlusIcon />
         Agregar niño
-      </button>
+      </CustomButton>
 
       <dialog
         ref={dialogRef}
@@ -150,26 +151,23 @@ export function AddKidModal() {
       >
         <div className="w-full bg-[#FBF4EC] border border-borde rounded-3xl shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] overflow-hidden">
           <div className="flex items-center justify-between px-6.5 py-5 border-b border-borde">
-            <button
+            <CustomButton
               type="button"
               onClick={closeModal}
-              className="text-[15px] font-bold hover:cursor-pointer text-mute transition-colors duration-150 hover:text-tinta"
+              variant="cancel"
             >
               Cancelar
-            </button>
-            <h2
-              id={TITLE_ID}
-              className="font-display font-semibold text-[18px] text-tinta"
-            >
+            </CustomButton>
+            <h2 id={TITLE_ID} className="font-display font-semibold text-[18px] text-tinta">
               Agregar niño
             </h2>
-            <button
+            <CustomButton
               type="submit"
               form={FORM_ID}
-              className="text-[15px] font-extrabold hover:cursor-pointer text-acento transition-colors duration-150 hover:text-acento-editar"
+              variant="save"
             >
               Guardar
-            </button>
+            </CustomButton>
           </div>
 
           <form
@@ -178,50 +176,34 @@ export function AddKidModal() {
             noValidate
             className="p-[24px_26px]"
           >
-            <div className="mb-4.5">
-              <label
-                htmlFor="add-kid-name"
-                className="block text-[12px] font-extrabold tracking-[0.7px] text-mute mb-2"
-              >
-                NOMBRE COMPLETO
-              </label>
-              <input
-                id="add-kid-name"
-                ref={(element) => {
-                  fieldRefs.current.name = element;
-                }}
-                type="text"
-                value={form.name}
-                onChange={(event) => updateField("name", event.target.value)}
-                placeholder="Ej. Martina López"
-                className={fieldClass("name")}
-              />
-              {errors.name && <p className={errorClass}>{errors.name}</p>}
-            </div>
+            <CustomInput
+              id="add-kid-name"
+              ref={(element) => {
+                fieldRefs.current.name = element;
+              }}
+              type="text"
+              label="NOMBRE COMPLETO"
+              value={form.name}
+              onChange={(event) => updateField("name", event.target.value)}
+              placeholder="Ej. Martina López"
+              error={errors.name}
+              className="mb-4.5"
+            />
 
             <div className="flex flex-col sm:flex-row gap-3.5 mb-4.5">
-              <div className="flex-1 min-w-0">
-                <label
-                  htmlFor="add-kid-birth-date"
-                  className="block text-[12px] font-extrabold tracking-[0.7px] text-mute mb-2"
-                >
-                  FECHA DE NACIMIENTO
-                </label>
-                <input
-                  id="add-kid-birth-date"
-                  ref={(element) => {
-                    fieldRefs.current.birthDate = element;
-                  }}
-                  type="date"
-                  value={form.birthDate}
-                  max={maxDate || undefined}
-                  onChange={(event) => updateField("birthDate", event.target.value)}
-                  className={fieldClass("birthDate")}
-                />
-                {errors.birthDate && (
-                  <p className={errorClass}>{errors.birthDate}</p>
-                )}
-              </div>
+              <CustomInput
+                id="add-kid-birth-date"
+                ref={(element) => {
+                  fieldRefs.current.birthDate = element;
+                }}
+                type="date"
+                label="FECHA DE NACIMIENTO"
+                value={form.birthDate}
+                max={maxDate || undefined}
+                onChange={(event) => updateField("birthDate", event.target.value)}
+                error={errors.birthDate}
+                className="flex-1 min-w-0"
+              />
 
               <div className="flex-1 min-w-0">
                 <label
@@ -247,32 +229,27 @@ export function AddKidModal() {
                       </option>
                     ))}
                   </select>
-                  <ChevronIconDown />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#B0A290]">
+                    <ChevronIcon rotate={0} />
+                  </span>
                 </div>
                 {errors.room && <p className={errorClass}>{errors.room}</p>}
               </div>
             </div>
 
-            <div className="mb-4.5">
-              <label
-                htmlFor="add-kid-allergies"
-                className="block text-[12px] font-extrabold tracking-[0.7px] text-mute mb-2"
-              >
-                ALERGIAS (ETIQUETAS)
-              </label>
-              <input
-                id="add-kid-allergies"
-                ref={(element) => {
-                  fieldRefs.current.allergies = element;
-                }}
-                type="text"
-                value={form.allergies}
-                onChange={(event) => updateField("allergies", event.target.value)}
-                placeholder="Ej. Maní, Lactosa"
-                className={fieldClass("allergies")}
-              />
-              {errors.allergies && <p className={errorClass}>{errors.allergies}</p>}
-            </div>
+            <CustomInput
+              id="add-kid-allergies"
+              ref={(element) => {
+                fieldRefs.current.allergies = element;
+              }}
+              type="text"
+              label="ALERGIAS (ETIQUETAS)"
+              value={form.allergies}
+              onChange={(event) => updateField("allergies", event.target.value)}
+              placeholder="Ej. Maní, Lactosa"
+              error={errors.allergies}
+              className="mb-4.5"
+            />
 
             <div>
               <label

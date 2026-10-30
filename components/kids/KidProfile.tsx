@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Avatar } from "@/components/common/avatars/Avatar";
 import type { Kid, KidParent } from "@/data/kids/mock-kids";
-import { ChevronIconLeft } from "@/components/common/icons/Icons";
+import { ChevronIcon } from "@/components/common/icons/Icons";
 
 // Short month names in Spanish; two fixed formats don't justify a date library.
 const MONTHS_SHORT_ES = [
@@ -46,7 +46,7 @@ export function KidProfile({ kid }: { kid: Kid }) {
         href="/kids"
         className="inline-flex items-center gap-1.75 text-[14px] font-bold text-mute mb-5"
       >
-        <ChevronIconLeft size={18} />
+        <ChevronIcon size={18} rotate={90} />
         Volver a Niños
       </Link>
 

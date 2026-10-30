@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronIconLeft } from '@/components/common/icons/Icons'
+import { ChevronIcon } from '@/components/common/icons/Icons'
 
 // In-app state for unknown kid ids, rendered inside the (app) shell.
 export function KidNotFound() {
@@ -9,7 +9,7 @@ export function KidNotFound() {
         href="/kids"
         className="inline-flex items-center gap-1.75 text-[14px] font-bold text-mute mb-5"
       >
-        <ChevronIconLeft size={18} />
+        <ChevronIcon size={18} rotate={90} />
         Volver a Niños
       </Link>
       <div className="bg-card border border-borde rounded-[18px] p-10 flex flex-col items-center gap-2 text-center">
