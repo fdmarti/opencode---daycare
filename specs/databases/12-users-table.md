@@ -197,28 +197,32 @@ El email y la contraseña viven solo en `auth.users` / `auth.identities`.
 
 ## Criterios de aceptación
 
-- [ ] `specs/` contiene solo `app/`, `databases/` y `.spec-config.yml`; no queda ningún spec suelto en la raíz.
-- [ ] `specs/app/` contiene los SPEC 01–10 y `specs/databases/` contiene los SPEC 11 y 12, con los nombres de archivo originales.
-- [ ] Los movimientos quedaron registrados como renames en git (`git status` muestra `R`), no como archivos borrados y recreados.
-- [ ] Ninguna referencia interna a un spec apunta a una ruta inexistente (`grep -rn "specs/[0-9]" specs/` no devuelve rutas viejas).
-- [ ] `AGENTS.md` documenta la categorización `specs/app/` vs `specs/databases/`, la numeración global correlativa y que `.spec-config.yml` queda en la raíz de `specs/`.
-- [ ] `list_migrations` devuelve exactamente dos entradas: `create_daycares` y `create_users`.
-- [ ] Existen los enums `public.user_role` (`staff`,`parent`,`admin`) y `public.user_status` (`pending`,`active`) con esos valores exactos.
-- [ ] Existe la tabla `public.users` con exactamente las 10 columnas y defaults del apartado "Modelo de datos".
-- [ ] `public.users.id` es FK a `auth.users(id)` con `ON DELETE CASCADE`; `public.users.daycare_id` es FK a `public.daycares(id)`, `NOT NULL`, con `ON DELETE RESTRICT`.
-- [ ] `pg_class.relrowsecurity` de `public.users` es `true` y `pg_policies` devuelve 0 filas para la tabla.
-- [ ] `authenticated` tiene `select`, `insert`, `update` y `delete` sobre `public.users`; `anon` no tiene ningún privilegio.
-- [ ] Existe el índice `users_daycare_id_idx` sobre `public.users (daycare_id)`.
-- [ ] El trigger `users_set_updated_at` actualiza `updated_at` en cada `update`.
-- [ ] El trigger `on_auth_user_created` existe sobre `auth.users` y crea la fila en `public.users` con `daycare_id`, `role` y `full_name` tomados de la metadata.
-- [ ] Un `insert` en `auth.users` sin `daycare_id` en `raw_app_meta_data` no falla y no crea fila en `public.users`.
-- [ ] `auth.users` contiene 1 fila: `fededmartinez@gmail.com`, con `encrypted_password` no nula (bcrypt) y `email_confirmed_at` no nulo.
-- [ ] `auth.identities` contiene la identidad `email` del mismo `user_id`.
-- [ ] `public.users` contiene exactamente 1 fila: `role = staff`, `status = active`, `daycare_id` = "Guardería Soles", `full_name` = `Federico Martínez`, y su `id` es igual al `auth.users.id`.
-- [ ] `POST /auth/v1/token?grant_type=password` con `fededmartinez@gmail.com` / `abc12345` devuelve 200 con `access_token`, y el `sub` del token coincide con `public.users.id`.
-- [ ] Existe `supabase/migrations/<version>_create_users.sql` con el SQL idéntico al aplicado.
-- [ ] `get_advisors` no reporta advisors nuevos de nivel error/warning sobre `public.users`.
-- [ ] No se modificó ningún otro archivo del repo (salvo este spec).
+- [x] `specs/` contiene solo `app/`, `databases/` y `.spec-config.yml`; no queda ningún spec suelto en la raíz.
+- [x] `specs/app/` contiene los SPEC 01–10 y `specs/databases/` contiene los SPEC 11 y 12, con los nombres de archivo originales.
+- [x] Los movimientos quedaron registrados como renames en git (`git status` muestra `R`), no como archivos borrados y recreados.
+  > Nota del verificador: los renames ya están committeados en `20bdc40` (`git log --diff-filter=R --name-status` devuelve `R100`–`R098` para los 11 archivos movidos), así que `git status` actual ya no los lista: solo muestra el archivo nuevo de migración.
+- [x] Ninguna referencia interna a un spec apunta a una ruta inexistente (`grep -rn "specs/[0-9]" specs/` no devuelve rutas viejas).
+  > Nota del verificador: la única coincidencia de `grep -rn "specs/[0-9]" specs/` es la mención ilustrativa dentro de este mismo spec 12 ("`specs/01-feed-home.md` → `specs/app/01-feed-home.md`"), que documenta la transformación, no una referencia colgante. En `specs/app/` y `specs/databases/` no queda ninguna referencia a rutas viejas.
+- [x] `AGENTS.md` documenta la categorización `specs/app/` vs `specs/databases/`, la numeración global correlativa y que `.spec-config.yml` queda en la raíz de `specs/`.
+- [x] `list_migrations` devuelve exactamente dos entradas: `create_daycares` y `create_users`.
+- [x] Existen los enums `public.user_role` (`staff`,`parent`,`admin`) y `public.user_status` (`pending`,`active`) con esos valores exactos.
+- [x] Existe la tabla `public.users` con exactamente las 10 columnas y defaults del apartado "Modelo de datos".
+- [x] `public.users.id` es FK a `auth.users(id)` con `ON DELETE CASCADE`; `public.users.daycare_id` es FK a `public.daycares(id)`, `NOT NULL`, con `ON DELETE RESTRICT`.
+- [x] `pg_class.relrowsecurity` de `public.users` es `true` y `pg_policies` devuelve 0 filas para la tabla.
+- [x] `authenticated` tiene `select`, `insert`, `update` y `delete` sobre `public.users`; `anon` no tiene ningún privilegio.
+- [x] Existe el índice `users_daycare_id_idx` sobre `public.users (daycare_id)`.
+- [x] El trigger `users_set_updated_at` actualiza `updated_at` en cada `update`.
+- [x] El trigger `on_auth_user_created` existe sobre `auth.users` y crea la fila en `public.users` con `daycare_id`, `role` y `full_name` tomados de la metadata.
+- [x] Un `insert` en `auth.users` sin `daycare_id` en `raw_app_meta_data` no falla y no crea fila en `public.users`.
+- [x] `auth.users` contiene 1 fila: `fededmartinez@gmail.com`, con `encrypted_password` no nula (bcrypt) y `email_confirmed_at` no nulo.
+- [x] `auth.identities` contiene la identidad `email` del mismo `user_id`.
+- [x] `public.users` contiene exactamente 1 fila: `role = staff`, `status = active`, `daycare_id` = "Guardería Soles", `full_name` = `Federico Martínez`, y su `id` es igual al `auth.users.id`.
+- [x] `POST /auth/v1/token?grant_type=password` con `fededmartinez@gmail.com` / `abc12345` devuelve 200 con `access_token`, y el `sub` del token coincide con `public.users.id`.
+- [x] Existe `supabase/migrations/<version>_create_users.sql` con el SQL idéntico al aplicado.
+- [x] `get_advisors` no reporta advisors nuevos de nivel error/warning sobre `public.users`.
+  > Nota del verificador: no hay advisors de nivel **error**. Sobre la tabla `public.users` el único hallazgo es el lint **INFO** `rls_enabled_no_policy`, esperado por el deny-all de este spec (igual que `daycares`). Quedan tres **WARN** a nivel proyecto, todos **decididos explícitamente en las "Decisiones" de este spec** y ninguno sobre la tabla: `anon_security_definer_function_executable` y `authenticated_security_definer_function_executable` sobre `public.handle_new_auth_user()` (decisión: **no** revocar execute) y `function_search_path_mutable` sobre `public.set_updated_at()` (decisión del usuario: dejarlo tal cual). También persiste el WARN de proyecto `auth_leaked_password_protection` (configuración de Auth, ajena a este spec).
+- [x] No se modificó ningún otro archivo del repo (salvo este spec).
+  > Nota del verificador: el working tree solo tiene el archivo nuevo `supabase/migrations/20261030200043_create_users.sql` (exigido por otro criterio de este mismo spec) y este spec. En el commit `20bdc40` los demás cambios son los expressly previstos en el "Alcance": `AGENTS.md` (regla de categorización) y `.opencode/agents/spec-verifier.md` (resolver specs en las dos carpetas).
 
 ## Decisiones
 
