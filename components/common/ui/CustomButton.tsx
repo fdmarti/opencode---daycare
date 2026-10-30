@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 
-export type CustomButtonVariant = "primary" | "cancel" | "save";
+export type CustomButtonVariant = "primary" | "cancel" | "save" | "chip";
 export type CustomButtonType = "button" | "submit";
 export type CustomButtonSize = "md" | "lg";
 
@@ -9,6 +9,8 @@ export interface CustomButtonProps
   variant?: CustomButtonVariant;
   type?: CustomButtonType;
   size?: CustomButtonSize;
+  /** Only affects variant="chip": toggles the selected chip look. */
+  selected?: boolean;
   children: ReactNode;
   ref?: Ref<HTMLButtonElement>;
 }
@@ -25,15 +27,30 @@ const CANCEL_CLASS =
 const SAVE_CLASS =
   "text-[15px] font-extrabold text-acento transition-colors duration-150 hover:cursor-pointer hover:text-acento-editar";
 
+const CHIP_BASE_CLASS =
+  "flex-1 p-2.75 rounded-full border-[1.5px] font-extrabold text-[14px] transition-colors duration-150 hover:cursor-pointer";
+
+const CHIP_SELECTED_CLASS =
+  "bg-anuncio-fondo border-[#9FB8EC] text-anuncio";
+
+const CHIP_UNSELECTED_CLASS =
+  "bg-card border-borde text-nav";
+
 function variantClass(
   variant: CustomButtonVariant,
   size: CustomButtonSize,
+  selected: boolean,
 ): string {
   switch (variant) {
     case "cancel":
       return CANCEL_CLASS;
     case "save":
       return SAVE_CLASS;
+    case "chip":
+      return [
+        CHIP_BASE_CLASS,
+        selected ? CHIP_SELECTED_CLASS : CHIP_UNSELECTED_CLASS,
+      ].join(" ");
     case "primary":
     default:
       return size === "lg" ? PRIMARY_LG_CLASS : PRIMARY_MD_CLASS;
@@ -44,6 +61,7 @@ export function CustomButton({
   variant = "primary",
   type = "button",
   size = "md",
+  selected = false,
   className,
   children,
   ...buttonProps
@@ -51,7 +69,7 @@ export function CustomButton({
   return (
     <button
       type={type}
-      className={[variantClass(variant, size), className]
+      className={[variantClass(variant, size, selected), className]
         .filter(Boolean)
         .join(" ")}
       {...buttonProps}
