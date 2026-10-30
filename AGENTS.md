@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project
 
-Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No backend, no test runner, no DB yet — the app is a static UI over mock data.
+Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No test runner; the UI is still static over mock data and the Supabase schema is **designed but not implemented** yet.
 
 - **The mockups are the product spec**: `references/pantallas/*.dc.html` (Spanish daycare app: login, feed, niños, avisos, resumen del día…). Read the `.dc.html` of a screen before building it; polished renders of the target look are in `references/screenshots/`. Copy and palette come from there, not from your taste.
 - `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo — never modify or rebuild it here.
@@ -54,10 +54,28 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 - Specs are historical records: never rewrite an implemented spec's scope; only the verifier marks criteria.
 - `generating-commits` — Conventional Commits, ≤72 chars, with a "why" explanation.
 
+### Skills (`.agents/skills/`, tracked in `skills-lock.json`)
+
+- `spec`, `spec-impl` — from `klerith/fernando-skills` (spec workflow above).
+- `supabase` — from `supabase/agent-skills`; **required** for any Supabase task (auth, RLS, storage, functions, migrations, logs). It also warns that Supabase changes fast: check `https://supabase.com/changelog.md` for breaking changes before implementing.
+- `supabase-postgres-best-practices` — from `supabase/agent-skills`; **required before writing/changing anything in Postgres** (schema design, columns, indexes, RLS, triggers, functions, queues, vector search, performance debugging).
+- Skill sources and hashes live in `skills-lock.json`; install/refresh with the `skill-manager` skill (publishes to the shared `DarwoftSkills` Azure DevOps repo).
+
+## Supabase
+
+- Remote project `nbxyedmbcaotimfwdskx` (`https://nbxyedmbcaotimfwdskx.supabase.co`), accessed through the **Supabase MCP server** (global `~/.config/opencode/opencode.json`, features: docs, account, database, debugging, development, functions, branching). The MCP runs SQL against the **remote** DB — changes are live, not local.
+- **The Supabase CLI is NOT installed** (`supabase` not on PATH). There is no local `supabase/` folder and no local stack: do not assume `supabase start`, `supabase db diff` or `supabase link` work. Migrations live in the remote project only (`list_migrations` is currently empty).
+- `supabase-js` / `@supabase/ssr` are **not yet** dependencies of this app; the UI runs on mock data in `data/`. Add them only when a spec covers it.
+- `.env` holds `SUPABASE_DB_PASSWORD` (gitignored); `.env.template` is the committed placeholder (`.gitignore` has `!.env.template`). Never commit `.env` or any key.
+- **Schema reference**: `../07-DB-Schema/opendaycare-database-schema.md` (opencode reference `docs`). It is the source of truth for tables/columns/enums — everything persisted is in **English** (enums, tags, codes); user-visible labels are translated in the UI layer (Spanish).
+- Before writing any SQL/schema: enable **RLS on every exposed table**, match policies to the real access model, and never use `user_metadata` for authorization (use `app_metadata`). Granting `anon`/`authenticated` access requires explicit `GRANT` + RLS (Data API exposure ≠ RLS).
+- Load the `supabase` skill for any Supabase task and `supabase-postgres-best-practices` before writing SQL, migrations, indexes or RLS policies.
+
 ## MCPs & git
 
 - Playwright: screenshots and logs must go to `.playwright-mcp/` (gitignored).
 - Context7: use it for current framework docs.
+- Supabase MCP: see the **Supabase** section above (remote project, no local stack).
 - `opencode.json` is local config (gitignored) — do not commit it.
 - Feature branches are `spec-NN-slug` and land as merge commits from `fdmarti/*`; keep commits scoped to one spec.
 
