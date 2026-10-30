@@ -17,7 +17,7 @@ const iconSize: Record<AvatarSize, number> = {
 export function Avatar({ size = "md" }: { size?: AvatarSize }) {
   return (
     <div
-      className={`flex-none rounded-full bg-[#ECE0D0] text-[#A89A8B] flex items-center justify-center ${sizeClasses[size]}`}
+      className={`flex-none rounded-full bg-borde text-placeholder flex items-center justify-center ${sizeClasses[size]}`}
     >
       <svg
         width={iconSize[size]}

@@ -3,8 +3,8 @@ import { KidCard } from "@/components/kids/KidCard";
 
 export default function KidsPage() {
   return (
-    <div className="max-w-[880px] w-full mx-auto px-10 pt-[34px] pb-20">
-      <div className="flex items-end justify-between gap-4 mb-[22px]">
+    <div className="max-w-220 w-full mx-auto px-10 pt-8.5 pb-20">
+      <div className="flex items-end justify-between gap-4 mb-5.5">
         <div>
           <div className="text-[12.5px] font-extrabold tracking-[0.8px] text-acento mb-1">
             GESTIÓN
@@ -14,7 +14,7 @@ export default function KidsPage() {
         {/* Dead link until "agregar niño" lands in a future spec. */}
         <a
           href="#"
-          className="flex items-center gap-2 px-[18px] py-[11px] rounded-[14px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)]"
+          className="flex items-center gap-2 px-4.5 py-2.75 rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)]"
         >
           <svg
             width="17"
@@ -33,7 +33,7 @@ export default function KidsPage() {
       </div>
 
       {/* Static search: no onChange and no filtering until a future spec. */}
-      <div className="flex items-center gap-[11px] bg-card border border-borde rounded-[14px] px-4 py-3 mb-[22px]">
+      <div className="flex items-center gap-2.75 bg-card border border-borde rounded-[14px] px-4 py-3 mb-5.5">
         <svg
           width="18"
           height="18"
@@ -53,7 +53,7 @@ export default function KidsPage() {
         />
       </div>
 
-      <div className="flex items-center gap-3 mb-[14px]">
+      <div className="flex items-center gap-3 mb-3.5">
         <span className="text-[12.5px] font-extrabold tracking-[0.8px] text-tinta">
           SALA SOLES
         </span>
@@ -61,7 +61,7 @@ export default function KidsPage() {
         <span className="flex-1 h-px bg-separador" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {mockKids.map((kid) => (
           <KidCard key={kid.id} kid={kid} />
         ))}

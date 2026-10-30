@@ -13,7 +13,7 @@ export function KidCard({ kid }: { kid: Kid }) {
   return (
     <Link
       href={`/kids/${kid.id}`}
-      className="group flex items-center gap-[14px] min-w-0 bg-card border border-borde rounded-[18px] p-4 shadow-[0_4px_14px_-12px_rgba(120,90,60,0.5)] transition duration-150 hover:border-[#F2A78E] hover:-translate-y-[2px]"
+      className="group flex items-center gap-3.5 min-w-0 bg-card border border-borde rounded-[18px] p-4 shadow-[0_4px_14px_-12px_rgba(120,90,60,0.5)] transition duration-150 hover:border-[#F2A78E] hover:-translate-y-0.5"
     >
       <Avatar size="md" />
       <div className="flex-1 min-w-0">
@@ -21,11 +21,11 @@ export function KidCard({ kid }: { kid: Kid }) {
         <div className="text-[13px] text-placeholder">{meta}</div>
       </div>
       {kid.allergy ? (
-        <span className="flex-none text-[11px] font-extrabold px-[9px] py-[5px] rounded-full bg-[#FBD8CC] text-[#D9684A]">
+        <span className="flex-none text-[11px] font-extrabold px-2.25 py-1.25 rounded-full bg-[#FBD8CC] text-[#D9684A]">
           {kid.allergy}
         </span>
       ) : parentCount == 0 ? (
-        <span className="flex-none text-[11px] font-extrabold px-[9px] py-[5px] rounded-full bg-[#F9D2DE] text-[#C56486]">
+        <span className="flex-none text-[11px] font-extrabold px-2.25 py-1.25 rounded-full bg-[#F9D2DE] text-[#C56486]">
           VINCULAR
         </span>
       ) : (
