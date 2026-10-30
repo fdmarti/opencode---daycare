@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project
 
-Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No test runner; the UI is still static over mock data and the Supabase schema is **designed but not implemented** yet.
+Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No test runner; the UI is still static over mock data and the Supabase schema is **being migrated table by table** from `../07-DB-Schema` (see the **Supabase** section for the migration-file rule).
 
 - **The mockups are the product spec**: `references/pantallas/*.dc.html` (Spanish daycare app: login, feed, niños, avisos, resumen del día…). Read the `.dc.html` of a screen before building it; polished renders of the target look are in `references/screenshots/`. Copy and palette come from there, not from your taste.
 - `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo — never modify or rebuild it here.
@@ -64,7 +64,13 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 ## Supabase
 
 - Remote project `nbxyedmbcaotimfwdskx` (`https://nbxyedmbcaotimfwdskx.supabase.co`), accessed through the **Supabase MCP server** (global `~/.config/opencode/opencode.json`, features: docs, account, database, debugging, development, functions, branching). The MCP runs SQL against the **remote** DB — changes are live, not local.
-- **The Supabase CLI is NOT installed** (`supabase` not on PATH). There is no local `supabase/` folder and no local stack: do not assume `supabase start`, `supabase db diff` or `supabase link` work. Migrations live in the remote project only (`list_migrations` is currently empty).
+- **The Supabase CLI is NOT installed** (`supabase` not on PATH) and there is no local stack: do not assume `supabase start`, `supabase db diff` or `supabase link` work. The remote project is the source of truth for the schema.
+- **Every schema change must land as a migration file in the repo.** `supabase/migrations/<version>_<name>.sql` is the committed record of each DB change, in the same order it was applied. Rules:
+  - Apply the change to the remote DB with MCP `apply_migration` **and** add the identical SQL as a file in `supabase/migrations/` in the same change. Never apply DDL to the remote project without the matching file.
+  - Name the file `<version>_<name>.sql`, where `<version>` is the `YYYYMMDDHHMMSS` timestamp returned by `list_migrations` for that migration (e.g. `20261030190834_create_daycares.sql`) and `<name>` is the migration name (`create_daycares`).
+  - One migration per table/logic change: keep each file independently reviewable and verifiable.
+  - The file is the SQL exactly as applied — same comments, same statements. Do not edit a file after it has been applied; add a new migration instead.
+  - Migrations are only a record: they are applied via MCP, not by the CLI. Data-only changes (seeds) are **not** migrations — they run via `execute_sql` and are not committed as files.
 - `supabase-js` / `@supabase/ssr` are **not yet** dependencies of this app; the UI runs on mock data in `data/`. Add them only when a spec covers it.
 - `.env` holds `SUPABASE_DB_PASSWORD` (gitignored); `.env.template` is the committed placeholder (`.gitignore` has `!.env.template`). Never commit `.env` or any key.
 - **Schema reference**: `../07-DB-Schema/opendaycare-database-schema.md` (opencode reference `docs`). It is the source of truth for tables/columns/enums — everything persisted is in **English** (enums, tags, codes); user-visible labels are translated in the UI layer (Spanish).
