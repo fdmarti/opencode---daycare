@@ -10,50 +10,56 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project
 
-Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`).
+Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No backend, no test runner, no DB yet — the app is a static UI over mock data.
 
-- The product spec is the UI mockups in `references/pantallas/*.dc.html` (daycare app in Spanish: login, feeds, niños, avisos, resumen del día…). Before building a screen, read its `.dc.html` mockup; polished renders are in `references/screenshots/`.
-- Approved specs live in `specs/` (`NN-name.md`, plus `specs/.spec-config.yml` with `AutoCreateBranch` for `/spec-impl`). The create-next-app starter page is gone: `/` is the feed (spec 01).
-- `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo, so never modify or rebuild it here.
-- Path alias: `@/*` → repo root.
+- **The mockups are the product spec**: `references/pantallas/*.dc.html` (Spanish daycare app: login, feed, niños, avisos, resumen del día…). Read the `.dc.html` of a screen before building it; polished renders of the target look are in `references/screenshots/`. Copy and palette come from there, not from your taste.
+- `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo — never modify or rebuild it here.
+- `references/**` is excluded from ESLint (`eslint.config.mjs`) — the mockups are not linted and not shipped.
+- Path alias: `@/*` → repo root. Typed routes are on: type props as `LayoutProps<"/">` / `PageProps<"/kids/[id]">` (globally generated in `.next/types/routes.d.ts`), never hand-write prop types for pages.
 
 ## Structure (Nuxt-style folders)
 
-- `app/` — routing/layouts only (Next.js convention, keep intact): route group `app/(app)/` holds the shared shell (`layout.tsx` = `<Sidebar/>` + scrollable `<main>`) and its pages.
-- `components/<feature>/` — UI split per feature (`feed/`, `layout/`), cross-cutting code in `components/common/<concern>/` (e.g. `icons/Icons.tsx`). File names are **PascalCase**.
-- `data/<feature>/` — mock data for that feature (`data/feed/mock-posts.ts`). No Next.js special meaning; routing lives only in `app/`.
+- `app/` — routing/layouts only (Next.js convention, keep intact): route group `app/(app)/` holds the shared shell (`layout.tsx` = `<Sidebar/>` + scrollable `<main>`) and its pages. `/login` and `/register` live **outside** that group (no sidebar).
+- `components/<feature>/` — UI split per feature (`feed/`, `kids/`, `login/`, `layout/`), cross-cutting code in `components/common/<concern>/` (`icons/Icons.tsx`, `ui/CustomButton.tsx`, `ui/CustomInput.tsx`). File names are **PascalCase**.
+- `data/<feature>/` — mock data for that feature (`data/feed/mock-posts.ts`), kebab-case file names. No Next.js special meaning; routing lives only in `app/`.
 - Never put feature UI inside `app/` pages; import via the `@/*` alias.
 
 ## Commands
 
 - `npm run dev` — dev server (Turbopack; also regenerates the `nextjs-agent-rules` block above)
-- `npm run lint` — ESLint flat config (`eslint-config-next`)
+- `npm run lint` — ESLint flat config (`eslint-config-next`), lints the whole repo
 - `npm run build` — production build
-- No test runner and no typecheck script exist. If needed: `npx tsc --noEmit`
+- `npx tsc --noEmit` — typecheck (no script exists for it)
+- `node scripts/canonical-classes.mjs [--fix]` — reports/fixes Tailwind classes that are not in canonical form (mirrors the VS Code `tailwindCSS.lint.suggestCanonicalClasses` setting). Run it after writing classes; the repo is expected to be canonical-class clean.
+- Verification order used by specs/verifier: `npm run lint` → `npx tsc --noEmit` → `npm run build`; visual criteria are checked with the Playwright MCP (dev server on `http://localhost:3000`).
 
 ## next.config.ts gotchas
 
 - `cacheComponents: true`, `partialPrefetching: true`, and `experimental.agentFeedback` are enabled — check the bundled docs before assuming default caching/rendering behavior.
-- Tailwind v4 is wired via the Turbopack loader rule (`@tailwindcss/turbopack`). Styling is CSS-first (`@theme` in `app/globals.css`); there is no `tailwind.config.js`.
+- Tailwind v4 is wired via the Turbopack loader rule (`@tailwindcss/turbopack`). Styling is CSS-first (`@theme` in `app/globals.css`); there is no `tailwind.config.js`. Theme tokens are Spanish-named (`--color-acento`, `--color-fondo`, `--color-tinta`, …) → use them as `bg-acento`, `text-tinta`.
 
-## Skills & workflow (`.agents/skills/`)
+## Code conventions worth knowing
 
-- `/spec <feature>` — spec-driven design; specs are saved to `specs/` as `NN-name.md` with an `Estado:` header (must be "Aprovado" before implementing).
-- `/spec-impl <NN-name>` — implements an approved spec on its own `spec-NN-slug` branch; branch is created automatically unless `specs/.spec-config.yml` sets `AutoCreateBranch: false`.
-- `spec-verifier` (`.opencode/agents/spec-verifier.md`) — subagent that reviews a spec's **Criterios de aceptación**: verifies statically, consults Context7 for Next.js conventions, uses Playwright MCP for screens, and flips `- [ ]` → `- [x]` (fixing code when needed).
+- Code (identifiers, files) in English; visible strings in Spanish (mockup copy).
+- Tailwind v4 does not see runtime-built classes: rotation on icons uses inline `style={{ transform: \`rotate(${rotate}deg)\` }}`, never `rotate-[${n}deg]`.
+- One `ChevronIcon` in `components/common/icons/Icons.tsx` with a `rotate` prop (`0` down, `90` left, `-90` right). Do not add directional chevron components.
+- Reuse `components/common/ui/CustomButton.tsx` (`variant`: `primary|cancel|save`, `size`: `md|lg`) and `CustomInput.tsx` (`variant`: `field|bare`) instead of new local button/input markup.
+
+## Spec-driven workflow (`.agents/skills/`)
+
+- Specs live in `specs/` as `NN-name.md`, written in Spanish with a `> **Estado:**` header (`Borrador` → `Aprovado` → `Implementado`). `specs/.spec-config.yml` holds `AutoCreateBranch`.
+- `/spec <feature>` — designs a spec only; never writes code. Saves `specs/NN-slug.md` and stops.
+- `/spec-impl <NN-name>` — implements an **approved** spec on its own `spec-NN-slug` branch, one plan step at a time, pausing for diff review; it never commits on its own.
+- `spec-verifier` (`.opencode/agents/spec-verifier.md`) — subagent that checks **Criterios de aceptación** against code + Playwright and flips `- [ ]` → `- [x]`.
+- Specs are historical records: never rewrite an implemented spec's scope; only the verifier marks criteria.
 - `generating-commits` — Conventional Commits, ≤72 chars, with a "why" explanation.
 
-## MCPs
+## MCPs & git
 
-- Playwright: capturas y logs de playwright deben guardarse en `.playwright-mcp/` (ya está en `.gitignore`).
-- Context7: usar para traer la documentación actualizada del framework.
-- `opencode.json` es configuración local (está en `.gitignore`), no commitearla.
-
-## Code rules
-
-- Always use clean code, all name must be in english. (functions, variables, etc)
-- Code in English (functions, variables, components); visible strings in Spanish (mockup copy).
-- Specs are historical records: never edit an implemented spec's scope; criteria are marked by the verifier.
+- Playwright: screenshots and logs must go to `.playwright-mcp/` (gitignored).
+- Context7: use it for current framework docs.
+- `opencode.json` is local config (gitignored) — do not commit it.
+- Feature branches are `spec-NN-slug` and land as merge commits from `fdmarti/*`; keep commits scoped to one spec.
 
 <!-- BEGIN:nextjs-agent-feedback -->
 
