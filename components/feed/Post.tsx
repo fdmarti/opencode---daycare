@@ -12,8 +12,8 @@ export function Post({ post }: { post: Post }) {
   const isAnnouncement = post.type === "announcement";
 
   return (
-    <article className="bg-card border border-borde rounded-[20px] px-[22px] py-5 shadow-[0_4px_16px_-12px_rgba(120,90,60,0.5)]">
-      <header className="flex items-center gap-3 mb-[14px]">
+    <article className="bg-card border border-borde rounded-[20px] px-5.5 py-5 shadow-[0_4px_16px_-12px_rgba(120,90,60,0.5)]">
+      <header className="flex items-center gap-3 mb-3.5">
         {isAnnouncement ? (
           <div className="w-11 h-11 rounded-full bg-anuncio-fondo text-anuncio flex items-center justify-center flex-none">
             <MegaphoneIcon />
@@ -29,7 +29,7 @@ export function Post({ post }: { post: Post }) {
             {post.time} · {post.publishedBy}
           </div>
         </div>
-        <div className={`flex items-center gap-[7px] px-3 py-1.5 rounded-full ${badge.bg}`}>
+        <div className={`flex items-center gap-1.75 px-3 py-1.5 rounded-full ${badge.bg}`}>
           <span className={`w-2 h-2 rounded-full ${badge.dot}`} />
           <span className={`text-xs font-extrabold tracking-[0.5px] ${badge.text}`}>{badge.label}</span>
         </div>
@@ -42,20 +42,20 @@ export function Post({ post }: { post: Post }) {
       {post.photoCaption && (
         <a
           href="#"
-          className="flex flex-col items-center justify-center gap-2 mt-[14px] border-[1.5px] border-dashed border-foto-borde rounded-2xl bg-foto-fondo h-[200px] text-foto-tinta"
+          className="flex flex-col items-center justify-center gap-2 mt-3.5 border-[1.5px] border-dashed border-foto-borde rounded-2xl bg-foto-fondo h-50 text-foto-tinta"
         >
           <ImagePlaceholderIcon />
           <span className="text-[13.5px]">{post.photoCaption}</span>
         </a>
       )}
 
-      <footer className="flex items-center gap-[18px] mt-4 pt-[14px] border-t border-borde-suave">
-        <span className="flex items-center gap-[7px] text-corazon font-bold text-sm">
+      <footer className="flex items-center gap-4.5 mt-4 pt-3.5 border-t border-borde-suave">
+        <span className="flex items-center gap-1.75 text-corazon font-bold text-sm">
           <HeartIcon />
           {post.hearts}
         </span>
         {/* Dead link until the post detail lands in a future spec. */}
-        <a href="#" className="flex items-center gap-[7px] text-mute font-bold text-sm">
+        <a href="#" className="flex items-center gap-1.75 text-mute font-bold text-sm">
           <CommentIcon />
           {post.comments}
         </a>

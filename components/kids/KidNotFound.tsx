@@ -4,10 +4,10 @@ import { ChevronIconLeft } from '@/components/common/icons/Icons'
 // In-app state for unknown kid ids, rendered inside the (app) shell.
 export function KidNotFound() {
   return (
-    <div className="max-w-[880px] w-full mx-auto px-10 pt-[34px] pb-20">
+    <div className="max-w-220 w-full mx-auto px-10 pt-8.5 pb-20">
       <Link
         href="/kids"
-        className="inline-flex items-center gap-[7px] text-[14px] font-bold text-mute mb-[20px]"
+        className="inline-flex items-center gap-1.75 text-[14px] font-bold text-mute mb-5"
       >
         <ChevronIconLeft />
         Volver a Niños
