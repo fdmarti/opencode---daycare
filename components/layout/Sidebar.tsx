@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { logout } from '@/actions/auth'
 import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, SunIcon } from '@/components/common/icons/Icons'
 import { NewPostModal } from '@/components/feed/NewPostModal'
 
@@ -75,14 +76,15 @@ export function Sidebar() {
             <div className="font-extrabold text-sm text-tinta">Caro Giménez</div>
             <div className="text-xs text-placeholder">Maestra · Soles</div>
           </div>
-          {/* Dead link until auth lands in a future spec. */}
-          <a
-            href="#"
-            title="Cerrar sesión"
-            className="flex-none w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center"
-          >
-            <LogoutIcon size={16} />
-          </a>
+          <form action={logout} className="flex-none">
+            <button
+              type="submit"
+              title="Cerrar sesión"
+              className="w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center"
+            >
+              <LogoutIcon size={16} />
+            </button>
+          </form>
         </div>
       </div>
     </aside>
