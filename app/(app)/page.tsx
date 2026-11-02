@@ -1,5 +1,9 @@
+import { Suspense } from "react";
+
 import { mockPosts } from "@/data/feed/mock-posts";
+import { Skeleton } from "@/components/common/ui/Skeleton";
 import { Composer } from "@/components/feed/Composer";
+import { FeedHeader } from "@/components/feed/FeedHeader";
 import { Post } from "@/components/feed/Post";
 
 export default function FeedPage() {
@@ -9,7 +13,9 @@ export default function FeedPage() {
         <div className="text-[12.5px] font-extrabold tracking-[0.8px] text-acento mb-1">
           GUARDERÍA · SALA SOLES
         </div>
-        <h1 className="font-display font-semibold text-[30px] text-tinta">Buenas, Caro</h1>
+        <Suspense fallback={<Skeleton className="h-9 w-56" />}>
+          <FeedHeader />
+        </Suspense>
         <p className="mt-1.25 text-mute text-[14.5px]">12 niños · martes 17 jun</p>
       </div>
 

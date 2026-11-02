@@ -6,7 +6,9 @@ import { usePathname } from "next/navigation";
 
 import { logout } from '@/actions/auth'
 import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, SunIcon } from '@/components/common/icons/Icons'
+import { Skeleton } from '@/components/common/ui/Skeleton'
 import { NewPostModal } from '@/components/feed/NewPostModal'
+import { useSession } from '@/hooks/useSession'
 
 interface NavItem {
   label: string;
@@ -27,6 +29,7 @@ const existingPaths = new Set(["/", "/kids"]);
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { fullName, initial, roleLabel, daycareName, isLoading } = useSession();
 
   return (
     <aside className="hidden lg:flex w-62 flex-none flex-col bg-card border-r border-borde p-4 px-4 py-6 sticky top-0 h-screen">
@@ -69,18 +72,32 @@ export function Sidebar() {
 
       <div className="border-t border-borde pt-3.5 mt-2.5">
         <div className="flex items-center gap-2.75 px-2 py-1.5">
-          <div className="w-9.5 h-9.5 rounded-full bg-avatar-usuario text-white font-display font-semibold text-base flex items-center justify-center flex-none">
-            C
-          </div>
+          {isLoading ? (
+            <Skeleton circle className="w-9.5 h-9.5 flex-none" />
+          ) : (
+            <div className="w-9.5 h-9.5 rounded-full bg-avatar-usuario text-white font-display font-semibold text-base flex items-center justify-center flex-none">
+              {initial}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
-            <div className="font-extrabold text-sm text-tinta">Caro Giménez</div>
-            <div className="text-xs text-placeholder">Maestra · Soles</div>
+            {isLoading ? (
+              <Skeleton className="h-4 w-32" />
+            ) : (
+              <div className="font-extrabold text-sm text-tinta">{fullName}</div>
+            )}
+            {isLoading ? (
+              <Skeleton className="h-3 w-24 mt-1.5" />
+            ) : (
+              <div className="text-xs text-placeholder">
+                {daycareName ? `${roleLabel} · ${daycareName}` : roleLabel}
+              </div>
+            )}
           </div>
           <form action={logout} className="flex-none">
             <button
               type="submit"
               title="Cerrar sesión"
-              className="w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center"
+              className="w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center transition-colors hover:bg-acento hover:text-white hover:cursor-pointer"
             >
               <LogoutIcon size={16} />
             </button>
