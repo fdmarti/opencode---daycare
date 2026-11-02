@@ -11,6 +11,8 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
  * the new ones) and to the response (so the browser stores them).
  * `getClaims()` must run before the response is generated, otherwise the
  * refreshed cookies are lost.
+ *
+ * Returns the response plus whether the request carries a valid session.
  */
 export const updateSession = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({
@@ -40,7 +42,8 @@ export const updateSession = async (request: NextRequest) => {
   })
 
   // Triggers the session refresh (and the cookie write above).
-  await supabase.auth.getClaims()
+  // `data` is non-null when the request carries a valid session.
+  const { data } = await supabase.auth.getClaims()
 
-  return supabaseResponse
+  return { response: supabaseResponse, isAuthenticated: data !== null }
 }
