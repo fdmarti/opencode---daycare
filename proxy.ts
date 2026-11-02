@@ -27,6 +27,15 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublicRoute = PUBLIC_ROUTES.includes(pathname)
 
+  // Las rutas de API no son páginas: la política de redirects no aplica. Sin
+  // esta excepción, un POST sin sesión a /api/auth/login sería redirigido a
+  // /login y nunca llegaría al handler.
+  const isApiRoute = pathname.startsWith('/api/')
+
+  if (isApiRoute) {
+    return response
+  }
+
   if (isPublicRoute && isAuthenticated) {
     return redirectWithCookies(new URL('/', request.url), response)
   }

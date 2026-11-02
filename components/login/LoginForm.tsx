@@ -1,18 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { login } from "@/actions/auth";
 import { CustomButton } from "@/components/common/ui/CustomButton";
 import { CustomInput } from "@/components/common/ui/CustomInput";
 
+/**
+ * Único mensaje propio del flujo: cubre el caso en que no hay respuesta de
+ * Supabase que propagar (fallo de red o body no JSON).
+ */
+const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
+
 export function LoginForm() {
-  const [state, formAction, pending] = useActionState(login, undefined);
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPending(true);
+    setError(null);
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        router.push("/");
+        return;
+      }
+
+      // Se propaga tal cual el `message` que devolvió Supabase.
+      const body = (await response.json()) as { message?: string } | null;
+      setError(body?.message ?? FALLBACK_MESSAGE);
+    } catch {
+      // Fallo de red o respuesta no JSON.
+      setError(FALLBACK_MESSAGE);
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
     <div className="w-full max-w-98">
-      <form action={formAction}>
+      <form onSubmit={handleSubmit}>
         <h2 className="font-display text-[30px] font-semibold text-tinta m-0 mb-1.5">
           Iniciar sesión
         </h2>
@@ -60,8 +96,8 @@ export function LoginForm() {
           {pending ? "Ingresando…" : "Iniciar sesión"}
         </CustomButton>
 
-        {state?.error && (
-          <p className="mt-2.5 mb-0 text-[13px] text-acento">{state.error}</p>
+        {error && (
+          <p className="mt-2.5 mb-0 text-[13px] text-acento">{error}</p>
         )}
       </form>
 
