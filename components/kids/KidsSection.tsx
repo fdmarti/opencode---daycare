@@ -1,20 +1,25 @@
 "use client";
 
-import { useKids } from "@/hooks/useKids";
+import { useEffect } from "react";
+
 import { useRooms } from "@/hooks/useRooms";
 import { AddKidModal } from "@/components/kids/AddKidModal";
 import { KidsList } from "@/components/kids/KidsList";
+import { useKidsStore } from "@/stores/kids-store";
 
 /**
  * Pantalla de niños: header (kicker, título y botón de alta) más la lista.
  *
- * Es el único dueño de `useKids` y de `useRooms`, para que el botón
- * "Agregar niño" y el listado compartan la misma instancia del hook y el
- * `refetch` sin necesitar un context.
+ * La consulta a `children` la dispara el store al montar la pantalla; el
+ * listado y el modal de alta leen el mismo estado global.
  */
 export function KidsSection() {
-  const { filteredKids, search, setSearch, isLoading, refetch } = useKids();
   const { rooms } = useRooms();
+  const fetchKids = useKidsStore((state) => state.fetchKids);
+
+  useEffect(() => {
+    fetchKids();
+  }, [fetchKids]);
 
   return (
     <>
@@ -25,15 +30,10 @@ export function KidsSection() {
           </div>
           <h1 className="font-display font-semibold text-[30px] text-tinta">Niños</h1>
         </div>
-        <AddKidModal rooms={rooms} onSaved={refetch} />
+        <AddKidModal rooms={rooms} />
       </div>
 
-      <KidsList
-        kids={filteredKids}
-        search={search}
-        setSearch={setSearch}
-        isLoading={isLoading}
-      />
+      <KidsList />
     </>
   );
 }

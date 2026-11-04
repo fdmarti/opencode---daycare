@@ -18,8 +18,8 @@ export interface UseRoomsState {
  * Listado de salas de `public.rooms`.
  *
  * El fetch se hace en el navegador con el cliente de `utils/supabase/client.ts`,
- * igual que `useKids`: el aislamiento por guardería lo resuelven las policies
- * de RLS.
+ * igual que el store de niños: el aislamiento por guardería lo resuelven las
+ * policies de RLS.
  */
 export function useRooms(): UseRoomsState {
   const [rooms, setRooms] = useState<RoomRow[]>([]);
