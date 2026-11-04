@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { mockRooms } from "@/data/kids/mock-rooms";
+import type { RoomRow } from "@/data/kids/types";
+import { createClient } from "@/utils/supabase/client";
 import { ChevronIcon, PlusIcon } from "../common/icons/Icons";
 import { CustomButton } from "../common/ui/CustomButton";
 import { CustomInput } from "../common/ui/CustomInput";
@@ -34,6 +35,25 @@ const EMPTY_FORM: AddKidFormState = {
 
 const REQUIRED_FIELDS: AddKidField[] = ["name", "birthDate", "room"];
 
+const SAVE_ERROR_MESSAGE = "No se pudo guardar el niño. Intentá de nuevo.";
+const NO_ROOMS_MESSAGE = "No hay salas disponibles para esta guardería.";
+
+/** Divide el texto libre de alergias en tags, sin vacíos. */
+function parseAllergyTags(value: string): string[] {
+  return value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0);
+}
+
+export interface AddKidModalProps {
+  /** Salas de `public.rooms` para el selector "SALA". */
+  rooms: RoomRow[];
+  /** Se invoca después de un insert exitoso, para recargar el listado. */
+  onSaved: () => void;
+}
+
+
 /** Today as YYYY-MM-DD in the local timezone (same format as a date input). */
 function todayISO(): string {
   const now = new Date();
@@ -42,7 +62,7 @@ function todayISO(): string {
     .slice(0, 10);
 }
 
-export function AddKidModal() {
+export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const fieldRefs = useRef<Partial<Record<AddKidField, HTMLElement | null>>>({});
@@ -55,6 +75,8 @@ export function AddKidModal() {
   const [form, setForm] = useState<AddKidFormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<AddKidErrors>({});
   const [maxDate, setMaxDate] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const lockScroll = () => {
     // The page scrolls inside <main>, so the body alone does not stop it.
@@ -81,6 +103,7 @@ export function AddKidModal() {
     if (!dialog || dialog.open) return;
     // Computed on open so the server render never disagrees with the client.
     setMaxDate(todayISO());
+    setSaveError(null);
     dialog.showModal();
     lockScroll();
     fieldRefs.current.name?.focus();
@@ -94,6 +117,8 @@ export function AddKidModal() {
     unlockScroll();
     setForm(EMPTY_FORM);
     setErrors({});
+    setSaveError(null);
+    setIsSaving(false);
     triggerRef.current?.focus();
   };
 
@@ -101,8 +126,12 @@ export function AddKidModal() {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isSaving) {
+      return;
+    }
 
     const nextErrors: AddKidErrors = {};
     if (!form.name.trim()) nextErrors.name = REQUIRED_MESSAGE;
@@ -121,7 +150,39 @@ export function AddKidModal() {
       return;
     }
 
-    closeModal();
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const supabase = createClient();
+      const { error: insertError } = await supabase
+        .from("children")
+        .insert({
+          room_id: form.room,
+          full_name: form.name.trim(),
+          birth_date: form.birthDate,
+          medical_notes: form.medicalNotes.trim() || null,
+          allergy_tags: parseAllergyTags(form.allergies),
+        })
+        // `.select("id")` hace que el insert devuelva la fila insertada y que
+        // los errores de RLS o de constraint lleguen como error del insert.
+        .select("id")
+        .single();
+
+      if (insertError) {
+        console.error("No se pudo guardar el niño:", insertError);
+        setIsSaving(false);
+        setSaveError(SAVE_ERROR_MESSAGE);
+        return;
+      }
+
+      closeModal();
+      onSaved();
+    } catch (err) {
+      console.error("No se pudo guardar el niño:", err);
+      setIsSaving(false);
+      setSaveError(SAVE_ERROR_MESSAGE);
+    }
   };
 
   const fieldClass = (field: AddKidField) =>
@@ -165,8 +226,10 @@ export function AddKidModal() {
               type="submit"
               form={FORM_ID}
               variant="save"
+              disabled={isSaving}
+              className={isSaving ? "opacity-60 cursor-not-allowed" : undefined}
             >
-              Guardar
+              {isSaving ? "Guardando…" : "Guardar"}
             </CustomButton>
           </div>
 
@@ -176,6 +239,14 @@ export function AddKidModal() {
             noValidate
             className="p-[24px_26px]"
           >
+            {saveError && (
+              <p
+                role="alert"
+                className="mb-4.5 text-[13px] font-bold text-acento"
+              >
+                {saveError}
+              </p>
+            )}
             <CustomInput
               id="add-kid-name"
               ref={(element) => {
@@ -222,10 +293,10 @@ export function AddKidModal() {
                     onChange={(event) => updateField("room", event.target.value)}
                     className={`${fieldClass("room")} appearance-none pr-10 font-bold`}
                   >
-                    <option value="">Elegí una sala</option>
-                    {mockRooms.map((room) => (
-                      <option key={room} value={room}>
-                        {room}
+                    <option value="" disabled>Elegí una sala</option>
+                    {rooms.map((room) => (
+                      <option key={room.id} value={room.id}>
+                        {room.name}
                       </option>
                     ))}
                   </select>
@@ -234,6 +305,9 @@ export function AddKidModal() {
                   </span>
                 </div>
                 {errors.room && <p className={errorClass}>{errors.room}</p>}
+                {rooms.length === 0 && (
+                  <p className="mt-1.5 mb-0 text-[13px] text-mute">{NO_ROOMS_MESSAGE}</p>
+                )}
               </div>
             </div>
 

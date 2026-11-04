@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 
 import type { ChildWithRoomRow } from "@/data/kids/types";
-import { useKids } from "@/hooks/useKids";
 import { SearchIcon } from "@/components/common/icons/Icons";
 import { CustomInput } from "@/components/common/ui/CustomInput";
 import { Skeleton } from "@/components/common/ui/Skeleton";
@@ -41,10 +40,19 @@ function KidCardSkeleton() {
   );
 }
 
-export function KidsList() {
-  const { filteredKids, search, setSearch, isLoading } = useKids();
+export interface KidsListProps {
+  /** Niños ya filtrados por el buscador. */
+  kids: ChildWithRoomRow[];
+  /** Texto actual del buscador. */
+  search: string;
+  /** Setter del texto del buscador. */
+  setSearch: (value: string) => void;
+  /** true mientras la consulta está en vuelo. */
+  isLoading: boolean;
+}
 
-  const groups = useMemo(() => groupByRoom(filteredKids), [filteredKids]);
+export function KidsList({ kids, search, setSearch, isLoading }: KidsListProps) {
+  const groups = useMemo(() => groupByRoom(kids), [kids]);
 
   return (
     <>
