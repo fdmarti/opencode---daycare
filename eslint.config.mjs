@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated mockup runtime, never edited or shipped.
     "references/**",
+    // Scratch space for Playwright MCP: scripts and screenshots, gitignored.
+    ".playwright-mcp/**",
   ]),
 ]);
 
