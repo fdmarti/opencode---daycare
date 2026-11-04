@@ -5,10 +5,10 @@ import type { FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { RoomRow } from "@/data/kids/types";
 import { addKidSchema } from "@/schemas/add-kid-schema";
 import type { AddKidFormValues } from "@/schemas/add-kid-schema";
 import { useKidsStore } from "@/stores/kids-store";
+import { useRoomsStore } from "@/stores/rooms-store";
 import { parseAllergyTags, todayISO } from "@/utils/kids";
 import { ChevronIcon, PlusIcon } from "../common/icons/Icons";
 import { CustomButton } from "../common/ui/CustomButton";
@@ -23,11 +23,6 @@ const NO_ROOMS_MESSAGE = "No hay salas disponibles para esta guardería.";
 /** Orden en el que se enfoca el primer campo inválido al enviar. */
 const FOCUS_ORDER: (keyof AddKidFormValues)[] = ["name", "birthDate", "room"];
 
-export interface AddKidModalProps {
-  /** Salas de `public.rooms` para el selector "SALA". */
-  rooms: RoomRow[];
-}
-
 /**
  * Modal de alta de niños.
  *
@@ -36,7 +31,7 @@ export interface AddKidModalProps {
  * `formState.errors`. El insert lo hace el store (`addKid`), que también
  * recarga el listado.
  */
-export function AddKidModal({ rooms }: AddKidModalProps) {
+export function AddKidModal() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const scrollLock = useRef<{
@@ -49,7 +44,7 @@ export function AddKidModal({ rooms }: AddKidModalProps) {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const addKid = useKidsStore((state) => state.addKid);
-
+  const rooms = useRoomsStore((state) => state.rooms);
   const {
     register,
     handleSubmit,

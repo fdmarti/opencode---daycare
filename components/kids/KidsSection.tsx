@@ -2,24 +2,25 @@
 
 import { useEffect } from "react";
 
-import { useRooms } from "@/hooks/useRooms";
 import { AddKidModal } from "@/components/kids/AddKidModal";
 import { KidsList } from "@/components/kids/KidsList";
 import { useKidsStore } from "@/stores/kids-store";
+import { useRoomsStore } from "@/stores/rooms-store";
 
 /**
  * Pantalla de niños: header (kicker, título y botón de alta) más la lista.
  *
- * La consulta a `children` la dispara el store al montar la pantalla; el
- * listado y el modal de alta leen el mismo estado global.
+ * Las consultas a `children` y a `rooms` las dispara el store al montar la
+ * pantalla; el listado y el modal de alta leen el mismo estado global.
  */
 export function KidsSection() {
-  const { rooms } = useRooms();
   const fetchKids = useKidsStore((state) => state.fetchKids);
+  const fetchRooms = useRoomsStore((state) => state.fetchRooms);
 
   useEffect(() => {
     fetchKids();
-  }, [fetchKids]);
+    fetchRooms();
+  }, [fetchKids, fetchRooms]);
 
   return (
     <>
@@ -30,7 +31,7 @@ export function KidsSection() {
           </div>
           <h1 className="font-display font-semibold text-[30px] text-tinta">Niños</h1>
         </div>
-        <AddKidModal rooms={rooms} />
+        <AddKidModal />
       </div>
 
       <KidsList />

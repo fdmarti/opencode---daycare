@@ -1,14 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { logout } from '@/actions/auth'
 import { AvisosIcon, CuentaIcon, FeedIcon, LogoutIcon, NinosIcon, SunIcon } from '@/components/common/icons/Icons'
 import { Skeleton } from '@/components/common/ui/Skeleton'
 import { NewPostModal } from '@/components/feed/NewPostModal'
-import { useSession } from '@/hooks/useSession'
+import { useSessionStore } from '@/stores/session-store'
 
 interface NavItem {
   label: string;
@@ -29,7 +29,17 @@ const existingPaths = new Set(["/", "/kids"]);
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { fullName, initial, roleLabel, daycareName, isLoading } = useSession();
+  const fullName = useSessionStore((state) => state.fullName);
+  const initial = useSessionStore((state) => state.initial);
+  const roleLabel = useSessionStore((state) => state.roleLabel);
+  const daycareName = useSessionStore((state) => state.daycareName);
+  const isLoading = useSessionStore((state) => state.isLoading);
+  const fetchSession = useSessionStore((state) => state.fetchSession);
+  const logout = useSessionStore((state) => state.logout);
+
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
 
   return (
     <aside className="hidden lg:flex w-62 flex-none flex-col bg-card border-r border-borde p-4 px-4 py-6 sticky top-0 h-screen">
@@ -93,15 +103,14 @@ export function Sidebar() {
               </div>
             )}
           </div>
-          <form action={logout} className="flex-none">
-            <button
-              type="submit"
-              title="Cerrar sesión"
-              className="w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center transition-colors hover:bg-acento hover:text-white hover:cursor-pointer"
-            >
-              <LogoutIcon size={16} />
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={() => void logout()}
+            title="Cerrar sesión"
+            className="w-8 h-8 rounded-[10px] bg-fondo text-mute flex items-center justify-center transition-colors hover:bg-acento hover:text-white hover:cursor-pointer"
+          >
+            <LogoutIcon size={16} />
+          </button>
         </div>
       </div>
     </aside>

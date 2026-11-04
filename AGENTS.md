@@ -22,9 +22,8 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 - `app/` — routing/layouts only (Next.js convention, keep intact): route group `app/(app)/` holds the shared shell (`layout.tsx` = `<Sidebar/>` + scrollable `<main>`) and its pages. `/login` and `/register` live **outside** that group (no sidebar).
 - `components/<feature>/` — UI split per feature (`feed/`, `kids/`, `login/`, `layout/`), cross-cutting code in `components/common/<concern>/` (`icons/Icons.tsx`, `ui/CustomButton.tsx`, `ui/CustomInput.tsx`). File names are **PascalCase**.
 - `data/<feature>/` — mock data for that feature (`data/feed/mock-posts.ts`), kebab-case file names. No Next.js special meaning; routing lives only in `app/`.
-- `stores/<feature>-store.ts` — global client state with **Zustand** (`stores/kids-store.ts`).
+- `stores/<feature>-store.ts` — global client state with **Zustand** (`stores/kids-store.ts`, `stores/kid-profile-store.ts`, `stores/rooms-store.ts`, `stores/session-store.ts`).
 - `schemas/` — **Zod** schemas shared by forms and stores (`schemas/add-kid-schema.ts`); file names kebab-case, the type is derived with `z.infer`.
-- `hooks/` — React hooks that wrap data fetching or session state (`hooks/useRooms.ts`, `hooks/useSession.ts`).
 - Never put feature UI inside `app/` pages; import via the `@/*` alias.
 
 ## Commands
