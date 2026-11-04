@@ -40,7 +40,7 @@ export interface KidsStoreState {
  * componente con `useMemo` para no devolver un array nuevo en cada render.
  *
  * El fetch se hace en el navegador con el cliente de `utils/supabase/client.ts`,
- * igual que `useSession`: el JWT lleva el `app_metadata` del usuario y son
+ * igual que `session-store`: el JWT lleva el `app_metadata` del usuario y son
  * las policies de RLS las que aíslan por guardería.
  */
 export const useKidsStore = create<KidsStoreState>()((set) => ({

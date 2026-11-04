@@ -1,6 +1,6 @@
 /**
- * Derivaciones de la sesión, compartidas entre el hook de cliente
- * (`hooks/useSession.ts`) y el Server Component (`components/feed/FeedHeader.tsx`).
+ * Derivaciones de la sesión, compartidas entre el store de cliente
+ * (`stores/session-store.ts`) y el Server Component (`components/feed/FeedHeader.tsx`).
  *
  * La metadata se usa **solo para mostrar**: nunca para autorizar.
  */
