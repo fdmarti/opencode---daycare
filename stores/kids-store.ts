@@ -59,7 +59,7 @@ export const useKidsStore = create<KidsStoreState>()((set) => ({
       const { data, error: queryError } = await supabase
         .from("children")
         .select(
-          "id, full_name, birth_date, allergy_tags, room_id, rooms(id, name)",
+          "id, full_name, birth_date, enrolled_at, medical_notes, allergy_tags, room_id, rooms(id, name)",
         )
         .eq("status", "active")
         .order("full_name")

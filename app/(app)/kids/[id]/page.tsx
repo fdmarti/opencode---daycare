@@ -1,8 +1,12 @@
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-// El perfil del niño todavía no existe como funcionalidad: los ids ya son
-// UUID de la base y no hay vista que mostrar. Volver al listado es la única
-// acción posible.
-export default function KidProfilePage() {
-  redirect("/kids");
+import { KidProfileRoute } from "@/components/kids/KidProfileRoute";
+import { KidProfileSkeleton } from "@/components/kids/KidProfileSkeleton";
+
+export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
+  return (
+    <Suspense fallback={<KidProfileSkeleton />}>
+      <KidProfileRoute params={props.params} />
+    </Suspense>
+  );
 }
