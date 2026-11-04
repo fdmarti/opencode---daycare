@@ -17,6 +17,8 @@ export interface ChildWithRoomRow {
   id: string;
   full_name: string; // "Mateo Fernández"
   birth_date: string; // "2022-03-12" (YYYY-MM-DD)
+  enrolled_at: string; // "2025-02-01" (YYYY-MM-DD) → fila "Ingreso"
+  medical_notes: string | null; // texto libre de notas médicas
   allergy_tags: string[]; // ["peanut"] — se muestran tal cual
   room_id: string;
   rooms: RoomRow | null; // null si la sala no es visible (RLS)
