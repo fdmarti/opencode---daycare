@@ -7,6 +7,8 @@
  * El patrón es el de `utils/session.ts`: funciones puras, sin estado.
  */
 
+import type { ChildWithRoomRow } from "@/data/kids/types";
+
 /** Años cumplidos a hoy desde "YYYY-MM-DD". */
 export function ageFromBirthDate(birthDate: string): number {
   const [year, month, day] = birthDate.split("-").map(Number);
@@ -33,4 +35,40 @@ export function normalizeForSearch(text: string): string {
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase();
+}
+
+/** Divide el texto libre de alergias en tags, sin vacíos. */
+export function parseAllergyTags(value: string): string[] {
+  return value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0);
+}
+
+/**
+ * Filtra niños por nombre, ignorando mayúsculas y acentos.
+ *
+ * Con la búsqueda vacía devuelve la lista completa.
+ */
+export function filterKidsByName(
+  kids: ChildWithRoomRow[],
+  search: string,
+): ChildWithRoomRow[] {
+  const query = normalizeForSearch(search.trim());
+
+  if (query.length === 0) {
+    return kids;
+  }
+
+  return kids.filter((child) =>
+    normalizeForSearch(child.full_name).includes(query),
+  );
+}
+
+/** Hoy en "YYYY-MM-DD" en la zona horaria local. */
+export function todayISO(): string {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
 }

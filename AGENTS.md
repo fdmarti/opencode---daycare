@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project
 
-Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No test runner; the UI is still static over mock data and the Supabase schema is **being migrated table by table** from `../07-DB-Schema` (see the **Supabase** section for the migration-file rule).
+Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + Tailwind v4. Package manager is **npm** (commit `package-lock.json`). No test runner; the UI is partly static over mock data (feed) and partly live from Supabase (auth, rooms, kids) while the schema is **being migrated table by table** from `../07-DB-Schema` (see the **Supabase** section for the migration-file rule).
 
 - **The mockups are the product spec**: `references/pantallas/*.dc.html` (Spanish daycare app: login, feed, niños, avisos, resumen del día…). Read the `.dc.html` of a screen before building it; polished renders of the target look are in `references/screenshots/`. Copy and palette come from there, not from your taste.
 - `references/pantallas/support.js` is GENERATED ("do not edit"); its `dc-runtime` source is not in this repo — never modify or rebuild it here.
@@ -22,6 +22,9 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 - `app/` — routing/layouts only (Next.js convention, keep intact): route group `app/(app)/` holds the shared shell (`layout.tsx` = `<Sidebar/>` + scrollable `<main>`) and its pages. `/login` and `/register` live **outside** that group (no sidebar).
 - `components/<feature>/` — UI split per feature (`feed/`, `kids/`, `login/`, `layout/`), cross-cutting code in `components/common/<concern>/` (`icons/Icons.tsx`, `ui/CustomButton.tsx`, `ui/CustomInput.tsx`). File names are **PascalCase**.
 - `data/<feature>/` — mock data for that feature (`data/feed/mock-posts.ts`), kebab-case file names. No Next.js special meaning; routing lives only in `app/`.
+- `stores/<feature>-store.ts` — global client state with **Zustand** (`stores/kids-store.ts`).
+- `schemas/` — **Zod** schemas shared by forms and stores (`schemas/add-kid-schema.ts`); file names kebab-case, the type is derived with `z.infer`.
+- `hooks/` — React hooks that wrap data fetching or session state (`hooks/useRooms.ts`, `hooks/useSession.ts`).
 - Never put feature UI inside `app/` pages; import via the `@/*` alias.
 
 ## Commands
@@ -32,6 +35,14 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
 - `npx tsc --noEmit` — typecheck (no script exists for it)
 - `node scripts/canonical-classes.mjs [--fix]` — reports/fixes Tailwind classes that are not in canonical form (mirrors the VS Code `tailwindCSS.lint.suggestCanonicalClasses` setting). Run it after writing classes; the repo is expected to be canonical-class clean.
 - Verification order used by specs/verifier: `npm run lint` → `npx tsc --noEmit` → `npm run build`; visual criteria are checked with the Playwright MCP (dev server on `http://localhost:3000`).
+
+## Libraries (state, forms, validation)
+
+- **Zustand** (`^5`) — global client state. Store per feature in `stores/<feature>-store.ts` (`create<T>()((set) => …)`). Rules: the store owns the network calls (Supabase) and exposes `kids`/`isLoading`/`error`; derived data (e.g. filtering by name) is computed in the component with `useMemo`, not in the store, to avoid returning a new array on every render. Select narrow slices to keep re-renders tight.
+- **React Hook Form** (`^7`) — form state for modals/forms (`components/kids/AddKidModal.tsx`). Use `useForm` with the Zod resolver, never local `useState` per field.
+- **Zod** (`^4`) — validation. Schemas live in `schemas/` and are the single source of truth; export the type with `z.infer<typeof schema>` (e.g. `AddKidFormValues`) and the Spanish messages as constants (`REQUIRED_MESSAGE`, `FUTURE_DATE_MESSAGE`).
+- **@hookform/resolvers** (`^7`) — `zodResolver(schema)` bridges Zod and React Hook Form; import from `@hookform/resolvers/zod`.
+- Supabase client helpers: `utils/supabase/client.ts` (browser), `utils/supabase/server.ts` (Server Components/Actions), `utils/supabase/proxy.ts` (session refresh). Client-side queries use `utils/supabase/client.ts` and rely on RLS for tenant isolation; types of rows are declared in the repo (`data/kids/types.ts`) and applied with `.overrideTypes<Row[], { merge: false }>()` — no generated Supabase types yet.
 
 ## next.config.ts gotchas
 
@@ -75,7 +86,7 @@ Open Daycare — Next.js 16.4.3 (App Router) + React 19.3 + TypeScript strict + 
   - One migration per table/logic change: keep each file independently reviewable and verifiable.
   - The file is the SQL exactly as applied — same comments, same statements. Do not edit a file after it has been applied; add a new migration instead.
   - Migrations are only a record: they are applied via MCP, not by the CLI. Data-only changes (seeds) are **not** migrations — they run via `execute_sql` and are not committed as files.
-- `supabase-js` / `@supabase/ssr` are installed (used only where a spec requires DB access; the UI still runs on mock data in `data/`). Helpers: `utils/supabase/server.ts` (Server Components/Actions), `utils/supabase/client.ts` (Client Components), `utils/supabase/proxy.ts` (session refresh, used by the root `proxy.ts` — in Next 16 `middleware.ts` is deprecated in favor of `proxy.ts`). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (in `.env.local`, gitignored; placeholders in `.env.template`).
+- `supabase-js` / `@supabase/ssr` are installed. Helpers: `utils/supabase/server.ts` (Server Components/Actions), `utils/supabase/client.ts` (Client Components, used by stores/hooks for browser-side queries), `utils/supabase/proxy.ts` (session refresh, used by the root `proxy.ts` — in Next 16 `middleware.ts` is deprecated in favor of `proxy.ts`). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (in `.env.local`, gitignored; placeholders in `.env.template`).
 - `.env` holds `SUPABASE_DB_PASSWORD` (gitignored); `.env.template` is the committed placeholder (`.gitignore` has `!.env.template`). Never commit `.env` or any key.
 - **Schema reference**: `../07-DB-Schema/opendaycare-database-schema.md` (opencode reference `docs`). It is the source of truth for tables/columns/enums — everything persisted is in **English** (enums, tags, codes); user-visible labels are translated in the UI layer (Spanish).
 - Before writing any SQL/schema: enable **RLS on every exposed table**, match policies to the real access model, and never use `user_metadata` for authorization (use `app_metadata`). Granting `anon`/`authenticated` access requires explicit `GRANT` + RLS (Data API exposure ≠ RLS).

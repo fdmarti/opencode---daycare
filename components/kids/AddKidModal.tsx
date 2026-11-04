@@ -2,8 +2,14 @@
 
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import type { RoomRow } from "@/data/kids/types";
-import { createClient } from "@/utils/supabase/client";
+import { addKidSchema } from "@/schemas/add-kid-schema";
+import type { AddKidFormValues } from "@/schemas/add-kid-schema";
+import { useKidsStore } from "@/stores/kids-store";
+import { parseAllergyTags, todayISO } from "@/utils/kids";
 import { ChevronIcon, PlusIcon } from "../common/icons/Icons";
 import { CustomButton } from "../common/ui/CustomButton";
 import { CustomInput } from "../common/ui/CustomInput";
@@ -11,72 +17,56 @@ import { CustomInput } from "../common/ui/CustomInput";
 const FORM_ID = "add-kid-form";
 const TITLE_ID = "add-kid-title";
 
-const REQUIRED_MESSAGE = "Este campo es obligatorio";
-const FUTURE_DATE_MESSAGE = "La fecha no puede ser futura";
-
-interface AddKidFormState {
-  name: string;
-  birthDate: string;
-  room: string;
-  allergies: string;
-  medicalNotes: string;
-}
-
-type AddKidField = keyof AddKidFormState;
-type AddKidErrors = Partial<Record<AddKidField, string>>;
-
-const EMPTY_FORM: AddKidFormState = {
-  name: "",
-  birthDate: "",
-  room: "",
-  allergies: "",
-  medicalNotes: "",
-};
-
-const REQUIRED_FIELDS: AddKidField[] = ["name", "birthDate", "room"];
-
 const SAVE_ERROR_MESSAGE = "No se pudo guardar el niño. Intentá de nuevo.";
 const NO_ROOMS_MESSAGE = "No hay salas disponibles para esta guardería.";
 
-/** Divide el texto libre de alergias en tags, sin vacíos. */
-function parseAllergyTags(value: string): string[] {
-  return value
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter((tag) => tag.length > 0);
-}
+/** Orden en el que se enfoca el primer campo inválido al enviar. */
+const FOCUS_ORDER: (keyof AddKidFormValues)[] = ["name", "birthDate", "room"];
 
 export interface AddKidModalProps {
   /** Salas de `public.rooms` para el selector "SALA". */
   rooms: RoomRow[];
-  /** Se invoca después de un insert exitoso, para recargar el listado. */
-  onSaved: () => void;
 }
 
-
-/** Today as YYYY-MM-DD in the local timezone (same format as a date input). */
-function todayISO(): string {
-  const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 10);
-}
-
-export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
+/**
+ * Modal de alta de niños.
+ *
+ * El formulario lo maneja React Hook Form con un schema de Zod: los inputs
+ * quedan sin controlar (`register`) y los mensajes de error salen de
+ * `formState.errors`. El insert lo hace el store (`addKid`), que también
+ * recarga el listado.
+ */
+export function AddKidModal({ rooms }: AddKidModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const fieldRefs = useRef<Partial<Record<AddKidField, HTMLElement | null>>>({});
   const scrollLock = useRef<{
     body: string;
     container: HTMLElement | null;
     containerOverflow: string;
   } | null>(null);
 
-  const [form, setForm] = useState<AddKidFormState>(EMPTY_FORM);
-  const [errors, setErrors] = useState<AddKidErrors>({});
   const [maxDate, setMaxDate] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  const addKid = useKidsStore((state) => state.addKid);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setFocus,
+    formState: { errors, isSubmitting },
+  } = useForm<AddKidFormValues>({
+    resolver: zodResolver(addKidSchema),
+    mode: "onBlur",
+    defaultValues: {
+      name: "",
+      birthDate: "",
+      room: "",
+      allergies: "",
+      medicalNotes: "",
+    },
+  });
 
   const lockScroll = () => {
     // The page scrolls inside <main>, so the body alone does not stop it.
@@ -106,7 +96,7 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
     setSaveError(null);
     dialog.showModal();
     lockScroll();
-    fieldRefs.current.name?.focus();
+    setFocus("name");
   };
 
   const closeModal = () => {
@@ -115,80 +105,47 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
 
   const handleClose = () => {
     unlockScroll();
-    setForm(EMPTY_FORM);
-    setErrors({});
+    reset();
     setSaveError(null);
-    setIsSaving(false);
     triggerRef.current?.focus();
   };
 
-  const updateField = (field: AddKidField, value: string) => {
-    setForm((current) => ({ ...current, [field]: value }));
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (isSaving) {
-      return;
-    }
-
-    const nextErrors: AddKidErrors = {};
-    if (!form.name.trim()) nextErrors.name = REQUIRED_MESSAGE;
-    if (!form.birthDate) {
-      nextErrors.birthDate = REQUIRED_MESSAGE;
-    } else if (form.birthDate > todayISO()) {
-      nextErrors.birthDate = FUTURE_DATE_MESSAGE;
-    }
-    if (!form.room) nextErrors.room = REQUIRED_MESSAGE;
-
-    setErrors(nextErrors);
-
-    const firstInvalid = REQUIRED_FIELDS.find((field) => nextErrors[field]);
-    if (firstInvalid) {
-      fieldRefs.current[firstInvalid]?.focus();
-      return;
-    }
-
-    setIsSaving(true);
+  const onSubmit = async (values: AddKidFormValues) => {
     setSaveError(null);
 
     try {
-      const supabase = createClient();
-      const { error: insertError } = await supabase
-        .from("children")
-        .insert({
-          room_id: form.room,
-          full_name: form.name.trim(),
-          birth_date: form.birthDate,
-          medical_notes: form.medicalNotes.trim() || null,
-          allergy_tags: parseAllergyTags(form.allergies),
-        })
-        // `.select("id")` hace que el insert devuelva la fila insertada y que
-        // los errores de RLS o de constraint lleguen como error del insert.
-        .select("id")
-        .single();
-
-      if (insertError) {
-        console.error("No se pudo guardar el niño:", insertError);
-        setIsSaving(false);
-        setSaveError(SAVE_ERROR_MESSAGE);
-        return;
-      }
+      await addKid({
+        room_id: values.room,
+        // El trim del schema ya recortó el nombre y las notas.
+        full_name: values.name,
+        birth_date: values.birthDate,
+        medical_notes: values.medicalNotes || null,
+        allergy_tags: parseAllergyTags(values.allergies),
+      });
 
       closeModal();
-      onSaved();
     } catch (err) {
       console.error("No se pudo guardar el niño:", err);
-      setIsSaving(false);
       setSaveError(SAVE_ERROR_MESSAGE);
     }
   };
 
-  const fieldClass = (field: AddKidField) =>
+  const onInvalid = (invalidErrors: Record<string, unknown>) => {
+    const firstInvalid = FOCUS_ORDER.find((field) => invalidErrors[field]);
+    if (firstInvalid) {
+      setFocus(firstInvalid);
+    }
+  };
+
+  // `handleSubmit` se invoca en el submit, no durante el render.
+  const onFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    void handleSubmit(onSubmit, onInvalid)(event);
+  };
+
+  const fieldClass = (hasError: boolean) =>
     [
       "w-full p-[13px_16px] rounded-[14px] border-[1.5px] bg-white text-[15px] text-tinta",
-      errors[field] ? "border-acento" : "border-[#EADFD0]",
+      hasError ? "border-acento" : "border-[#EADFD0]",
     ].join(" ");
 
   const errorClass = "mt-1.5 mb-0 text-[13px] text-acento";
@@ -226,16 +183,16 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
               type="submit"
               form={FORM_ID}
               variant="save"
-              disabled={isSaving}
-              className={isSaving ? "opacity-60 cursor-not-allowed" : undefined}
+              disabled={isSubmitting}
+              className={isSubmitting ? "opacity-60 cursor-not-allowed" : undefined}
             >
-              {isSaving ? "Guardando…" : "Guardar"}
+              {isSubmitting ? "Guardando…" : "Guardar"}
             </CustomButton>
           </div>
 
           <form
             id={FORM_ID}
-            onSubmit={handleSubmit}
+            onSubmit={onFormSubmit}
             noValidate
             className="p-[24px_26px]"
           >
@@ -249,31 +206,23 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
             )}
             <CustomInput
               id="add-kid-name"
-              ref={(element) => {
-                fieldRefs.current.name = element;
-              }}
               type="text"
               label="NOMBRE COMPLETO"
-              value={form.name}
-              onChange={(event) => updateField("name", event.target.value)}
               placeholder="Ej. Martina López"
-              error={errors.name}
+              error={errors.name?.message}
               className="mb-4.5"
+              {...register("name")}
             />
 
             <div className="flex flex-col sm:flex-row gap-3.5 mb-4.5">
               <CustomInput
                 id="add-kid-birth-date"
-                ref={(element) => {
-                  fieldRefs.current.birthDate = element;
-                }}
                 type="date"
                 label="FECHA DE NACIMIENTO"
-                value={form.birthDate}
                 max={maxDate || undefined}
-                onChange={(event) => updateField("birthDate", event.target.value)}
-                error={errors.birthDate}
+                error={errors.birthDate?.message}
                 className="flex-1 min-w-0"
+                {...register("birthDate")}
               />
 
               <div className="flex-1 min-w-0">
@@ -286,12 +235,8 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
                 <div className="relative">
                   <select
                     id="add-kid-room"
-                    ref={(element) => {
-                      fieldRefs.current.room = element;
-                    }}
-                    value={form.room}
-                    onChange={(event) => updateField("room", event.target.value)}
-                    className={`${fieldClass("room")} appearance-none pr-10 font-bold`}
+                    className={`${fieldClass(Boolean(errors.room))} appearance-none pr-10 font-bold`}
+                    {...register("room")}
                   >
                     <option value="" disabled>Elegí una sala</option>
                     {rooms.map((room) => (
@@ -304,7 +249,7 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
                     <ChevronIcon rotate={0} />
                   </span>
                 </div>
-                {errors.room && <p className={errorClass}>{errors.room}</p>}
+                {errors.room?.message && <p className={errorClass}>{errors.room.message}</p>}
                 {rooms.length === 0 && (
                   <p className="mt-1.5 mb-0 text-[13px] text-mute">{NO_ROOMS_MESSAGE}</p>
                 )}
@@ -313,16 +258,11 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
 
             <CustomInput
               id="add-kid-allergies"
-              ref={(element) => {
-                fieldRefs.current.allergies = element;
-              }}
               type="text"
               label="ALERGIAS (ETIQUETAS)"
-              value={form.allergies}
-              onChange={(event) => updateField("allergies", event.target.value)}
               placeholder="Ej. Maní, Lactosa"
-              error={errors.allergies}
               className="mb-4.5"
+              {...register("allergies")}
             />
 
             <div>
@@ -334,18 +274,12 @@ export function AddKidModal({ rooms, onSaved }: AddKidModalProps) {
               </label>
               <textarea
                 id="add-kid-medical-notes"
-                ref={(element) => {
-                  fieldRefs.current.medicalNotes = element;
-                }}
-                value={form.medicalNotes}
-                onChange={(event) =>
-                  updateField("medicalNotes", event.target.value)
-                }
                 placeholder="Indicaciones, medicación, contactos…"
-                className={`${fieldClass("medicalNotes")} min-h-22.5 resize-y leading-normal`}
+                className={`${fieldClass(Boolean(errors.medicalNotes))} min-h-22.5 resize-y leading-normal`}
+                {...register("medicalNotes")}
               />
-              {errors.medicalNotes && (
-                <p className={errorClass}>{errors.medicalNotes}</p>
+              {errors.medicalNotes?.message && (
+                <p className={errorClass}>{errors.medicalNotes.message}</p>
               )}
             </div>
           </form>

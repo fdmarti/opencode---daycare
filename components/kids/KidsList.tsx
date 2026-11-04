@@ -2,11 +2,13 @@
 
 import { useMemo } from "react";
 
-import type { ChildWithRoomRow } from "@/data/kids/types";
 import { SearchIcon } from "@/components/common/icons/Icons";
 import { CustomInput } from "@/components/common/ui/CustomInput";
-import { Skeleton } from "@/components/common/ui/Skeleton";
 import { KidCard } from "@/components/kids/KidCard";
+import type { ChildWithRoomRow } from "@/data/kids/types";
+import { useKidsStore } from "@/stores/kids-store";
+import { filterKidsByName } from "@/utils/kids";
+import { KidCardSkeleton } from "./KidCardSkeleton";
 
 /** Agrupa los niños por nombre de sala; el orden de cada grupo es el de la consulta. */
 function groupByRoom(kids: ChildWithRoomRow[]): [string, ChildWithRoomRow[]][] {
@@ -26,33 +28,23 @@ function groupByRoom(kids: ChildWithRoomRow[]): [string, ChildWithRoomRow[]][] {
   return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
 }
 
-/** Placeholder con la forma de una tarjeta, mientras carga la consulta. */
-function KidCardSkeleton() {
-  return (
-    <div className="flex items-center gap-3.5 min-w-0 bg-card border border-borde rounded-[18px] p-4">
-      <Skeleton circle className="w-12 h-12" />
-      <div className="flex-1 min-w-0 flex flex-col gap-2">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-3 w-16" />
-      </div>
-      <Skeleton className="h-6 w-16 rounded-full" />
-    </div>
+/**
+ * Listado de niños agrupado por sala, con el buscador.
+ *
+ * El estado viene del store de niños: la lista, el texto de búsqueda y el
+ * estado de carga. El filtro por nombre se calcula acá con `useMemo`, para
+ * que el store no devuelva un array nuevo en cada render.
+ */
+export function KidsList() {
+  const kids = useKidsStore((state) => state.kids);
+  const search = useKidsStore((state) => state.search);
+  const setSearch = useKidsStore((state) => state.setSearch);
+  const isLoading = useKidsStore((state) => state.isLoading);
+
+  const groups = useMemo(
+    () => groupByRoom(filterKidsByName(kids, search)),
+    [kids, search],
   );
-}
-
-export interface KidsListProps {
-  /** Niños ya filtrados por el buscador. */
-  kids: ChildWithRoomRow[];
-  /** Texto actual del buscador. */
-  search: string;
-  /** Setter del texto del buscador. */
-  setSearch: (value: string) => void;
-  /** true mientras la consulta está en vuelo. */
-  isLoading: boolean;
-}
-
-export function KidsList({ kids, search, setSearch, isLoading }: KidsListProps) {
-  const groups = useMemo(() => groupByRoom(kids), [kids]);
 
   return (
     <>
