@@ -16,16 +16,16 @@ export interface CustomButtonProps
 }
 
 const PRIMARY_MD_CLASS =
-  "flex items-center gap-2 px-4.5 py-2.75 rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)] transition duration-150 hover:cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(238,129,100,0.85)] active:translate-y-0";
+  "flex items-center gap-2 px-4.5 py-2.75 rounded-[14px] bg-linear-to-b from-[#B34C28] to-[#A83E25] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(179,76,40,0.7)] transition duration-150 hover:cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(179,76,40,0.85)] active:translate-y-0";
 
 const PRIMARY_LG_CLASS =
-  "w-full p-3.75 rounded-[15px] bg-[linear-gradient(180deg,#F4977E,#EE8164)] text-white font-extrabold text-[16px] shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] transition duration-150 hover:cursor-pointer hover:-translate-y-0.5";
+  "w-full p-3.75 rounded-[15px] bg-[linear-gradient(180deg,#B34C28,#A83E25)] text-white font-extrabold text-[16px] shadow-[0_10px_22px_-8px_rgba(179,76,40,0.7)] transition duration-150 hover:cursor-pointer hover:-translate-y-0.5";
 
 const CANCEL_CLASS =
-  "text-[15px] font-bold text-mute transition-colors duration-150 hover:cursor-pointer hover:text-tinta";
+  "text-[15px] font-bold text-mute transition-colors duration-150 hover:cursor-pointer hover:text-tinta min-h-6";
 
 const SAVE_CLASS =
-  "text-[15px] font-extrabold text-acento transition-colors duration-150 hover:cursor-pointer hover:text-acento-editar";
+  "text-[15px] font-extrabold text-acento transition-colors duration-150 hover:cursor-pointer hover:text-acento-editar min-h-6";
 
 const CHIP_BASE_CLASS =
   "flex-1 p-2.75 rounded-full border-[1.5px] font-extrabold text-[14px] transition-colors duration-150 hover:cursor-pointer";

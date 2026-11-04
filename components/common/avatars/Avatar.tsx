@@ -20,6 +20,8 @@ export function Avatar({ size = "md" }: { size?: AvatarSize }) {
       className={`flex-none rounded-full bg-borde text-placeholder flex items-center justify-center ${sizeClasses[size]}`}
     >
       <svg
+        aria-hidden="true"
+        focusable="false"
         width={iconSize[size]}
         height={iconSize[size]}
         viewBox="0 0 24 24"
