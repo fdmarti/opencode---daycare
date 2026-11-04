@@ -2,7 +2,7 @@ import { SunIcon } from '@/components/common/icons/Icons'
 
 export function LoginPanel() {
   return (
-    <div className="relative overflow-hidden bg-[linear-gradient(155deg,#F6A98E_0%,#F2937A_45%,#EC7E62_100%)] flex flex-col justify-between p-[36px_28px] sm:p-[56px_60px] text-white">
+    <div className="relative overflow-hidden bg-[linear-gradient(155deg,#B34C28_0%,#A83E25_100%)] flex flex-col justify-between p-[36px_28px] sm:p-[56px_60px] text-white">
       <div className="absolute w-105 h-105 rounded-full bg-white/12 -top-35 -right-30" />
       <div className="absolute w-75 h-75 rounded-full bg-white/10 -bottom-27.5 -left-20" />
 
