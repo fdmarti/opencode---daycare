@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Avatar } from "@/components/common/avatars/Avatar";
-import type { Kid, KidParent } from "@/data/kids/mock-kids";
+import type { Kid, KidParent } from "@/data/kids/profile-types";
 import { ChevronIcon } from "@/components/common/icons/Icons";
 import { LinkParentModal } from "@/components/kids/LinkParentModal";
 
